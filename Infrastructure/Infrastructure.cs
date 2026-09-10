@@ -1,5 +1,8 @@
-﻿using Application.Abstractions.Persistence;
+﻿using Application.Abstractions.Authentication;
+using Application.Abstractions.Persistence;
+using Infrastructure.Authentication;
 using Infrastructure.Database;
+using Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +18,8 @@ public static class Infrastructure
             options.UseNpgsql(configuration.GetConnectionString("OnefoldDb"));
         });
 
-        services.AddScoped<IUserRepository, IUserRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITokenService, TokenService>();
 
         return services;
     }

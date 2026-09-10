@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: onefold-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: onefold
+      POSTGRES_USER: onefold
+      POSTGRES_PASSWORD: onefold
+    ports:
+      - "5432:5432"
+    volumes:
+      - onefold-db-data:/var/lib/postgresql
+
+volumes:
+  onefold-db-data:
