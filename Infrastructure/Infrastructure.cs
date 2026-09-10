@@ -1,4 +1,5 @@
-﻿using Infrastructure.Database;
+﻿using Application.Abstractions.Persistence;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,8 @@ public static class Infrastructure
         {
             options.UseNpgsql(configuration.GetConnectionString("OnefoldDb"));
         });
+
+        services.AddScoped<IUserRepository, IUserRepository>();
 
         return services;
     }
