@@ -12,6 +12,11 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.12" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Features\Authentication\GoogleSignUp\" />
     </ItemGroup>
 
 </Project>

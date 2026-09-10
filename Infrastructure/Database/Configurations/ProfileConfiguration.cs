@@ -9,6 +9,9 @@ public class ProfileConfiguration : IEntityTypeConfiguration<Profile>
     public void Configure(EntityTypeBuilder<Profile> builder)
     {
         builder.HasKey(p => p.Id);
+        builder.Property(p => p.Id)
+            .IsRequired()
+            .ValueGeneratedOnAdd();
 
         builder.Property(p => p.DisplayName)
             .IsRequired()
