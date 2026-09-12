@@ -4,5 +4,6 @@ namespace Application.Abstractions.Persistence;
 
 public interface IUserRepository
 {
-    public Task AddAsync(User user);
+    void Add(User user);
+    Task<User?> GetByEmailAsync(string email);
 }

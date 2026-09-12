@@ -33,9 +33,11 @@ public class TokenService(IConfiguration configuration) : ITokenService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string GenerateRefreshToken(User user)
+    public RefreshToken GenerateRefreshToken(User user)
     {
         var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-        return token;
+
+        var expiryDate = DateTime.UtcNow.AddDays(1);
+        return RefreshToken.Create(user.Id, token, expiryDate);
     }
 }

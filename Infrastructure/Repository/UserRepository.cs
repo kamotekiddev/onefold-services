@@ -1,14 +1,19 @@
 using Application.Abstractions.Persistence;
 using Domain.Entities;
 using Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
 
-public class UserRepository(AppDbContext db) : IUserRepository
+public sealed class UserRepository(AppDbContext db) : IUserRepository
 {
-    public async Task AddAsync(User user)
+    public void Add(User user)
     {
-        db.Add(user);
-        await db.SaveChangesAsync();
+        db.Users.Add(user);
+    }
+
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        return await db.Users.SingleOrDefaultAsync(u => u.Email == email);
     }
 }

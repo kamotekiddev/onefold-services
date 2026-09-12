@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using Domain.Entities.Exceptions;
 
 namespace Domain.Entities;
@@ -8,10 +9,18 @@ public class User : Entity
     public bool IsEmailVerified { get; private set; }
 
     public ICollection<Credential> Credentials { get; private set; } = [];
+    public ICollection<RefreshToken> RefreshTokens { get; private set; } = [];
     public Profile? Profile { get; private set; }
+
+    private User()
+    {
+    }
 
     public static User Create(string email)
     {
+        if (string.IsNullOrWhiteSpace(email) || !MailAddress.TryCreate(email, out _))
+            throw new InvalidEmailException();
+
         return new User
         {
             Email = email,
@@ -20,7 +29,9 @@ public class User : Entity
 
     public void AddCredential(Credential credential)
     {
-        if (Credentials.Contains(credential)) throw new CredentialAlreadyExistException();
+        if (Credentials.Any(c => c.Provider == credential.Provider))
+            throw new CredentialAlreadyExistException();
+
         Credentials.Add(credential);
     }
 

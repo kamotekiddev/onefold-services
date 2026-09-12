@@ -10,14 +10,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.HasKey(u => u.Id);
         builder.Property(u => u.Id)
-            .IsRequired()
-            .ValueGeneratedOnAdd();
+            .IsRequired();
 
         builder.Property(u => u.Email)
             .HasMaxLength(255);
 
-        builder.Property(u => u.IsEmailVerified);
-
-        builder.Property(u => u.CreatedAt);
+        builder.HasIndex(u => u.Email)
+            .IsUnique();
     }
 }

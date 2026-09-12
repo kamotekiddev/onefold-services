@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:18
-    container_name: onefold-db
+    container_name: OnefoldDb
     restart: unless-stopped
     environment:
       POSTGRES_DB: onefold
