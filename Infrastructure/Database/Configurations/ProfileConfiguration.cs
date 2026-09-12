@@ -9,6 +9,8 @@ public class ProfileConfiguration : IEntityTypeConfiguration<Profile>
     public void Configure(EntityTypeBuilder<Profile> builder)
     {
         builder.HasKey(p => p.Id);
+        builder.Property(p => p.Id)
+            .IsRequired();
 
         builder.Property(p => p.DisplayName)
             .IsRequired()
@@ -17,9 +19,8 @@ public class ProfileConfiguration : IEntityTypeConfiguration<Profile>
         builder.Property(p => p.UserId)
             .IsRequired();
 
-        builder.HasIndex(p => p.UserId);
-
-        builder.Property(p => p.CreatedAt);
+        builder.HasIndex(p => p.UserId)
+            .IsUnique();
 
         builder.HasOne(p => p.User)
             .WithOne(u => u.Profile)
