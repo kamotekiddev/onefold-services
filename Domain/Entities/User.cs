@@ -1,5 +1,6 @@
 using System.Net.Mail;
 using Domain.Entities.Exceptions;
+using Domain.Entities.Workout;
 
 namespace Domain.Entities;
 
@@ -11,6 +12,7 @@ public class User : Entity
     public ICollection<Credential> Credentials { get; private set; } = [];
     public ICollection<RefreshToken> RefreshTokens { get; private set; } = [];
     public Profile? Profile { get; private set; }
+    public ICollection<Exercise> Exercises { get; private set; } = [];
 
     private User()
     {
