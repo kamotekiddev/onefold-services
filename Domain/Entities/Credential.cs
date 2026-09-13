@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-public enum SignUpProvider
+public enum CredentialProvider
 {
     Email,
     Google,
@@ -10,7 +10,7 @@ public enum SignUpProvider
 public class Credential : Entity
 {
     public Guid UserId { get; init; }
-    public SignUpProvider Provider { get; init; }
+    public CredentialProvider Provider { get; init; }
     public string Value { get; private set; }
 
     public User User { get; private set; }
@@ -19,7 +19,7 @@ public class Credential : Entity
     {
     }
 
-    public static Credential Create(Guid userId, SignUpProvider provider, string value)
+    public static Credential Create(Guid userId, CredentialProvider provider, string value)
     {
         return new Credential
         {

@@ -16,7 +16,8 @@ public class CredentialConfiguration : IEntityTypeConfiguration<Credential>
             .IsRequired()
             .HasMaxLength(255);
 
-        builder.HasIndex(c => c.UserId);
+        builder.HasIndex(c => new { c.UserId, c.Provider })
+            .IsUnique();
 
         builder.Property(c => c.Value)
             .IsRequired()
