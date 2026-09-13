@@ -24,7 +24,7 @@ public sealed class EmailSignUp(
         var user = User.Create(request.Email);
 
         var hashedPassword = passwordHasher.HashPassword(user, request.Password);
-        var credential = Credential.Create(user.Id, SignUpProvider.Email, hashedPassword);
+        var credential = Credential.Create(user.Id, CredentialProvider.Email, hashedPassword);
 
         user.AddCredential(credential);
 
@@ -43,12 +43,12 @@ public sealed class EmailSignUp(
         {
             logger.LogError(ex,
                 "Sign up failed while saving to database. ProviderId:{ProviderId} UserId:{UserId}",
-                nameof(SignUpProvider.Email), user.Id);
+                nameof(CredentialProvider.Email), user.Id);
 
             throw;
         }
 
-        logger.LogInformation("Sign up successful. Provider:{Provider}, UserId:{UserId}", nameof(SignUpProvider.Email),
+        logger.LogInformation("Sign up successful. Provider:{Provider}, UserId:{UserId}", nameof(CredentialProvider.Email),
             user.Id);
 
         return new EmailSignUpResponse(accessToken, refreshToken.Value);

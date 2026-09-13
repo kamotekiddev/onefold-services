@@ -16,4 +16,9 @@ public sealed class UserRepository(AppDbContext db) : IUserRepository
     {
         return await db.Users.SingleOrDefaultAsync(u => u.Email == email);
     }
+
+    public async Task<User?> GetByEmailWithCredentialsAsync(string email)
+    {
+        return await db.Users.Include(u => u.Credentials).SingleOrDefaultAsync(u => u.Email == email);
+    }
 }
