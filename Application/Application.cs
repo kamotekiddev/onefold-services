@@ -1,4 +1,5 @@
 ﻿using Application.Features.Authentication.EmailSignUp;
+using Application.Features.Authentication.RefreshAccessToken;
 using Application.Features.Authentication.SignInWithEmail;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,7 @@ public static class Application
     {
         services.AddScoped<EmailSignUp>();
         services.AddScoped<SignInWithEmailHandler>();
+        services.AddScoped<RefreshAccessTokenHandler>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         return services;
     }
