@@ -1,3 +1,5 @@
+using Domain.Entities.Exceptions;
+
 namespace Domain.Entities.Workout;
 
 public class Exercise : Entity
@@ -19,6 +21,12 @@ public class Exercise : Entity
         {
             Name = name
         };
+    }
+
+    public void AttachToUser(Guid userId)
+    {
+        if (userId == Guid.Empty) throw new InvalidIdException();
+        UserId = userId;
     }
 
     public void Activate()
