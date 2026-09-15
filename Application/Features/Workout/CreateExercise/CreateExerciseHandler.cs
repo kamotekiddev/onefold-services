@@ -17,7 +17,7 @@ public sealed class CreateExerciseHandler(
         var name = request.Name.Trim();
         var exercise = await exerciseRepository.GetByNameAsync(name);
 
-        if (exercise is not null)
+        if (exercise is not null && exercise?.UserId == currentUser.UserId)
         {
             logger.LogWarning("Attempted to create exercise {exercise} that already exist.", name);
             throw new ConflictException("Exercise already exist.");
