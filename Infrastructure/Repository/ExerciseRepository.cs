@@ -12,9 +12,14 @@ public class ExerciseRepository(AppDbContext db) : IExerciseRepository
         db.Exercises.Add(exercise);
     }
 
-    public Task<Exercise?> GetByNameAsync(string name)
+    public async Task<Exercise?> GetByNameAsync(string name)
     {
-        return db.Exercises.FirstOrDefaultAsync(e =>
+        return await db.Exercises.FirstOrDefaultAsync(e =>
             e.Name.ToLower() == name.ToLower());
+    }
+
+    public async Task<Exercise?> GetById(Guid id)
+    {
+        return await db.Exercises.SingleOrDefaultAsync(e => e.Id == id);
     }
 }

@@ -6,4 +6,5 @@ public interface IExerciseRepository
 {
     void Add(Exercise exercise);
     Task<Exercise?> GetByNameAsync(string name);
+    Task<Exercise?> GetById(Guid id);
 }

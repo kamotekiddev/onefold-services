@@ -2,6 +2,7 @@
 using Application.Features.Authentication.RefreshAccessToken;
 using Application.Features.Authentication.SignInWithEmail;
 using Application.Features.Workout.CreateExercise;
+using Application.Features.Workout.GetExercise;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,7 @@ public static class Application
         services.AddScoped<SignInWithEmailHandler>();
         services.AddScoped<RefreshAccessTokenHandler>();
         services.AddScoped<CreateExerciseHandler>();
+        services.AddScoped<GetExerciseHandler>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
         return services;
