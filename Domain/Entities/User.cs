@@ -21,7 +21,7 @@ public class User : Entity
     public static User Create(string email)
     {
         if (string.IsNullOrWhiteSpace(email) || !MailAddress.TryCreate(email, out _))
-            throw new InvalidEmailException();
+            throw new DomainException("Invalid email.");
 
         return new User
         {

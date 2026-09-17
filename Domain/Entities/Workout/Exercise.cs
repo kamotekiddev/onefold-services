@@ -25,7 +25,7 @@ public class Exercise : Entity
 
     public void AttachToUser(Guid userId)
     {
-        if (userId == Guid.Empty) throw new InvalidIdException();
+        if (userId == Guid.Empty) throw new DomainException("Invalid userId value.");
         UserId = userId;
     }
 
