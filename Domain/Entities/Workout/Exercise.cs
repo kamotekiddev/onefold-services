@@ -5,6 +5,7 @@ namespace Domain.Entities.Workout;
 public class Exercise : Entity
 {
     public string Name { get; private set; }
+    public string? Description { get; private set; }
     public bool IsActive { get; private set; }
 
     public Guid? UserId { get; private set; }
@@ -15,11 +16,12 @@ public class Exercise : Entity
     {
     }
 
-    public static Exercise Create(string name)
+    public static Exercise Create(string name, string? description = null)
     {
         return new Exercise()
         {
-            Name = name
+            Name = name,
+            Description = description
         };
     }
 
