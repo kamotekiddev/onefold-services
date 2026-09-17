@@ -8,6 +8,9 @@ public class WorkoutTemplate : Entity
     public string? Description { get; private set; }
     public int RestInMinutes { get; private set; }
 
+    public Guid UserId { get; init; }
+    public User User { get; init; }
+
     public IReadOnlyCollection<WorkoutExercise> WorkoutExercises =>
         _workoutExercises.AsReadOnly();
 
@@ -17,12 +20,14 @@ public class WorkoutTemplate : Entity
     {
     }
 
-    public static WorkoutTemplate Create(string name, int restInMinutes)
+    public static WorkoutTemplate Create(Guid userId, string name, int restInMinutes)
     {
+        if (userId == Guid.Empty) throw new DomainException("Invalid userId value.");
         if (restInMinutes <= 0) throw new DomainException("Invalid rest in minutes.");
 
         return new WorkoutTemplate()
         {
+            UserId = userId,
             Name = name,
             RestInMinutes = restInMinutes
         };
