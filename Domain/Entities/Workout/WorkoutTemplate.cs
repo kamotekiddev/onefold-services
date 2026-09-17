@@ -8,7 +8,10 @@ public class WorkoutTemplate : Entity
     public string? Description { get; private set; }
     public int RestInMinutes { get; private set; }
 
-    public ICollection<WorkoutExercise> WorkoutExercises { get; private set; }
+    public IReadOnlyCollection<WorkoutExercise> WorkoutExercises =>
+        _workoutExercises.AsReadOnly();
+
+    private readonly List<WorkoutExercise> _workoutExercises = [];
 
     private WorkoutTemplate()
     {
@@ -27,11 +30,16 @@ public class WorkoutTemplate : Entity
 
     public void AddExercise(WorkoutExercise workoutExercise)
     {
-        WorkoutExercises.Add(workoutExercise);
+        if (_workoutExercises.Any(e => e.ExerciseId == workoutExercise.ExerciseId))
+            throw new WorkoutExerciseAlreadyExistsException("Workout exercise already added in this template.");
+
+        _workoutExercises.Add(workoutExercise);
     }
 
     public void RemoveExercise(WorkoutExercise workoutExercise)
     {
-        WorkoutExercises.Remove(workoutExercise);
+        if (!_workoutExercises.Contains(workoutExercise))
+            throw new WorkoutExerciseDoesNotExistException("Workout exercise does not exist.");
+        _workoutExercises.Remove(workoutExercise);
     }
 }
