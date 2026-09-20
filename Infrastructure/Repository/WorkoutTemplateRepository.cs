@@ -17,11 +17,16 @@ public class WorkoutTemplateRepository(AppDbContext db) : IWorkoutTemplateReposi
         return await db.WorkoutTemplates.FirstOrDefaultAsync(wt => wt.Name == name);
     }
 
-    public async Task<bool> CheckUserOwnedByName(Guid userId, string name)
+    public async Task<bool> CheckUserOwnedByNameAsync(Guid userId, string name)
     {
         var existingTemplate =
             await db.WorkoutTemplates.FirstOrDefaultAsync(wt => wt.Name == name && wt.UserId == userId);
 
         return existingTemplate is not null;
+    }
+
+    public async Task<WorkoutTemplate?> GetByIdAsync(Guid templateId)
+    {
+        return await db.WorkoutTemplates.FindAsync(templateId);
     }
 }

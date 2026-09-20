@@ -17,8 +17,12 @@ public class WorkoutExercise : Entity
     {
     }
 
-    public static WorkoutExercise Create(Guid workoutTemplateId, Guid exerciseId, int targetReps,
-        int restPerSetInSeconds)
+    public static WorkoutExercise Create(
+        Guid workoutTemplateId,
+        Guid exerciseId,
+        int targetReps,
+        int restPerSetInSeconds,
+        int orderIdx)
     {
         if (exerciseId == Guid.Empty)
             throw new DomainException("Invalid exerciseId value.");
@@ -37,7 +41,8 @@ public class WorkoutExercise : Entity
             WorkoutTemplateId = workoutTemplateId,
             ExerciseId = exerciseId,
             TargetReps = targetReps,
-            RestPerSetInSeconds = restPerSetInSeconds
+            RestPerSetInSeconds = restPerSetInSeconds,
+            OrderIndex = orderIdx
         };
     }
 }

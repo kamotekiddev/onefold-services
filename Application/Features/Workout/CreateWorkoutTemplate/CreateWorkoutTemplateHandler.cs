@@ -24,7 +24,7 @@ public sealed class CreateWorkoutTemplateHandler(
         var templateName = request.Name.Trim();
         var description = request.Description?.Trim();
 
-        var alreadyExists = await workoutTemplateRepository.CheckUserOwnedByName(userId, templateName);
+        var alreadyExists = await workoutTemplateRepository.CheckUserOwnedByNameAsync(userId, templateName);
         if (alreadyExists)
         {
             logger.LogWarning("Workout template: {templateName} already exist.", templateName);
@@ -57,7 +57,8 @@ public sealed class CreateWorkoutTemplateHandler(
                 workoutTemplate.Id,
                 exercise.ExerciseId,
                 exercise.TargetReps,
-                exercise.RestPerSetInSeconds);
+                exercise.RestPerSetInSeconds,
+                exercise.OrderIdx);
 
             workoutTemplate.AddExercise(workoutExercise);
         }
