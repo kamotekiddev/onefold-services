@@ -6,5 +6,7 @@ public interface IExerciseRepository
 {
     void Add(Exercise exercise);
     Task<Exercise?> GetByNameAsync(string name);
-    Task<Exercise?> GetById(Guid id);
+    Task<Exercise?> GetByIdAsync(Guid id);
+
+    Task<IReadOnlyCollection<Exercise>> GetAvailableByIdsAsync(Guid userId, ICollection<Guid> ids);
 }

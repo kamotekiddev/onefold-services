@@ -8,13 +8,14 @@ public class WorkoutTemplateConfiguration : IEntityTypeConfiguration<WorkoutTemp
 {
     public void Configure(EntityTypeBuilder<WorkoutTemplate> builder)
     {
-        builder.HasKey(w => w.Id);
+        builder.HasKey(wt => wt.Id);
 
-        builder.HasIndex(w => w.UserId);
-
-        builder.HasOne(w => w.User)
+        builder.HasOne(wt => wt.User)
             .WithMany(u => u.WorkoutTemplates)
-            .HasForeignKey(w => w.UserId)
+            .HasForeignKey(wt => wt.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(wt => new { wt.Name, wt.UserId })
+            .IsUnique();
     }
 }

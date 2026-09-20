@@ -18,8 +18,13 @@ public class ExerciseRepository(AppDbContext db) : IExerciseRepository
             e.Name.ToLower() == name.ToLower());
     }
 
-    public async Task<Exercise?> GetById(Guid id)
+    public async Task<Exercise?> GetByIdAsync(Guid id)
     {
         return await db.Exercises.SingleOrDefaultAsync(e => e.Id == id);
+    }
+
+    public async Task<IReadOnlyCollection<Exercise>> GetAvailableByIdsAsync(Guid userId, ICollection<Guid> ids)
+    {
+        return await db.Exercises.Where(exercise => ids.Contains(exercise.Id)).ToListAsync();
     }
 }

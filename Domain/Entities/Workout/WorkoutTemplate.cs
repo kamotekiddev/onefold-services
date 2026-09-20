@@ -20,7 +20,7 @@ public class WorkoutTemplate : Entity
     {
     }
 
-    public static WorkoutTemplate Create(Guid userId, string name, int restInMinutes)
+    public static WorkoutTemplate Create(Guid userId, string name, int restInMinutes, string? description = null)
     {
         if (userId == Guid.Empty) throw new DomainException("Invalid userId value.");
         if (restInMinutes <= 0) throw new DomainException("Invalid rest in minutes.");
@@ -29,7 +29,8 @@ public class WorkoutTemplate : Entity
         {
             UserId = userId,
             Name = name,
-            RestInMinutes = restInMinutes
+            RestInMinutes = restInMinutes,
+            Description = description
         };
     }
 

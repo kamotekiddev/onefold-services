@@ -13,7 +13,7 @@ public sealed class GetExerciseHandler(
 {
     public async Task<ExerciseDto?> ExecuteAsync(Guid id)
     {
-        var exercise = await exerciseRepository.GetById(id);
+        var exercise = await exerciseRepository.GetByIdAsync(id);
 
         if (exercise is null)
         {

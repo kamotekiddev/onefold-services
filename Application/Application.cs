@@ -1,9 +1,12 @@
-﻿using Application.Features.Authentication.EmailSignUp;
+﻿using System.Reflection;
+using Application.Features.Authentication.EmailSignUp;
 using Application.Features.Authentication.RefreshAccessToken;
 using Application.Features.Authentication.SignInWithEmail;
 using Application.Features.Workout.CreateExercise;
+using Application.Features.Workout.CreateWorkoutTemplate;
 using Application.Features.Workout.GetExercise;
 using Domain.Entities;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,7 +21,10 @@ public static class Application
         services.AddScoped<RefreshAccessTokenHandler>();
         services.AddScoped<CreateExerciseHandler>();
         services.AddScoped<GetExerciseHandler>();
+        services.AddScoped<CreateWorkoutTemplateHandler>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         return services;
     }
