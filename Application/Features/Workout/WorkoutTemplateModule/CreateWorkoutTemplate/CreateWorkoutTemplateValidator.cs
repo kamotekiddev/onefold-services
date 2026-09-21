@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Application.Features.Workout.CreateWorkoutTemplate;
+namespace Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
 
 public sealed class CreateWorkoutTemplateValidator
     : AbstractValidator<CreateWorkoutTemplateRequest>

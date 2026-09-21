@@ -5,7 +5,7 @@ using Domain.Entities.Workout;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Workout.CreateWorkoutTemplate;
+namespace Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
 
 public sealed class CreateWorkoutTemplateHandler(
     IWorkoutTemplateRepository workoutTemplateRepository,

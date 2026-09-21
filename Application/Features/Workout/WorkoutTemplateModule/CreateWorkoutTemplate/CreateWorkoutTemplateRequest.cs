@@ -1,4 +1,4 @@
-namespace Application.Features.Workout.CreateWorkoutTemplate;
+namespace Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
 
 public record CreateWorkoutTemplateRequest(
     string Name,
