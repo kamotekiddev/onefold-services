@@ -4,7 +4,7 @@ using Application.Common.Exceptions;
 using Domain.Entities.Workout;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Workout.CreateExercise;
+namespace Application.Features.Workout.ExerciseModule.CreateExercise;
 
 public sealed class CreateExerciseHandler(
     IExerciseRepository exerciseRepository,

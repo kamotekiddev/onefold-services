@@ -4,7 +4,7 @@ using Application.Common.Exceptions;
 using Application.Dtos;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Workout.GetExercise;
+namespace Application.Features.Workout.ExerciseModule.GetExercise;
 
 public sealed class GetExerciseHandler(
     IExerciseRepository exerciseRepository,
