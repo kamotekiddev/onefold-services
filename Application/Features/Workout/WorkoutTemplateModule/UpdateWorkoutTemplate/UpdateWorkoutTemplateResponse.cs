@@ -1,0 +1,3 @@
+namespace Application.Features.Workout.WorkoutTemplateModule.UpdateWorkoutTemplate;
+
+public record UpdateWorkoutTemplateResponse(Guid WorkoutTemplateId);

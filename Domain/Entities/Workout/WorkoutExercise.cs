@@ -45,4 +45,11 @@ public class WorkoutExercise : Entity
             OrderIndex = orderIdx
         };
     }
+
+    public void Update(int targetReps, int restPerSetInSeconds, int orderIdx)
+    {
+        TargetReps = targetReps;
+        RestPerSetInSeconds = restPerSetInSeconds;
+        OrderIndex = orderIdx;
+    }
 }

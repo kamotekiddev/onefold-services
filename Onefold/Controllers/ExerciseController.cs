@@ -1,5 +1,5 @@
-using Application.Features.Workout.CreateExercise;
-using Application.Features.Workout.GetExercise;
+using Application.Features.Workout.ExerciseModule.CreateExercise;
+using Application.Features.Workout.ExerciseModule.GetExercise;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
