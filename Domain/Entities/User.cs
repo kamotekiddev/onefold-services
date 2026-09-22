@@ -1,5 +1,6 @@
 using System.Net.Mail;
 using Domain.Entities.Exceptions;
+using Domain.Entities.Workout;
 
 namespace Domain.Entities;
 
@@ -12,6 +13,10 @@ public class User : Entity
     public ICollection<RefreshToken> RefreshTokens { get; private set; } = [];
     public Profile? Profile { get; private set; }
 
+    public ICollection<WorkoutTemplate> WorkoutTemplates { get; private set; } = [];
+    public ICollection<WorkoutExercise> WorkoutExercises { get; private set; } = [];
+    public ICollection<Exercise> Exercises { get; private set; } = [];
+
     private User()
     {
     }
@@ -19,7 +24,7 @@ public class User : Entity
     public static User Create(string email)
     {
         if (string.IsNullOrWhiteSpace(email) || !MailAddress.TryCreate(email, out _))
-            throw new InvalidEmailException();
+            throw new DomainException("Invalid email.");
 
         return new User
         {

@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260913115955_AddExercise")]
+    partial class AddExercise
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,9 +155,6 @@ namespace Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
@@ -174,82 +174,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Exercises");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Workout.WorkoutExercise", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("ExerciseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("OrderIndex")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RestPerSetInSeconds")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TargetReps")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("WorkoutTemplateId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExerciseId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("WorkoutTemplateId");
-
-                    b.ToTable("WorkoutExercises");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Workout.WorkoutTemplate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("RestInMinutes")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("Name", "UserId")
-                        .IsUnique();
-
-                    b.ToTable("WorkoutTemplates");
                 });
 
             modelBuilder.Entity("Domain.Entities.Credential", b =>
@@ -295,40 +219,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Workout.WorkoutExercise", b =>
-                {
-                    b.HasOne("Domain.Entities.Workout.Exercise", "Exercise")
-                        .WithMany("WorkoutExercises")
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", null)
-                        .WithMany("WorkoutExercises")
-                        .HasForeignKey("UserId");
-
-                    b.HasOne("Domain.Entities.Workout.WorkoutTemplate", "WorkoutTemplate")
-                        .WithMany("WorkoutExercises")
-                        .HasForeignKey("WorkoutTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Exercise");
-
-                    b.Navigation("WorkoutTemplate");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Workout.WorkoutTemplate", b =>
-                {
-                    b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("WorkoutTemplates")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("Credentials");
@@ -338,20 +228,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Profile");
 
                     b.Navigation("RefreshTokens");
-
-                    b.Navigation("WorkoutExercises");
-
-                    b.Navigation("WorkoutTemplates");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Workout.Exercise", b =>
-                {
-                    b.Navigation("WorkoutExercises");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Workout.WorkoutTemplate", b =>
-                {
-                    b.Navigation("WorkoutExercises");
                 });
 #pragma warning restore 612, 618
         }

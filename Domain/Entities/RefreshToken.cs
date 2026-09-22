@@ -17,9 +17,9 @@ public class RefreshToken : Entity
 
     public static RefreshToken Create(Guid userId, string value, DateTime expiresAt)
     {
-        if (expiresAt < DateTime.Now) throw new InvalidTokenExpirationException();
-        if (userId == Guid.Empty) throw new InvalidIdException();
-        if (string.IsNullOrWhiteSpace(value)) throw new InvalidTokenException();
+        if (expiresAt < DateTime.Now) throw new DomainException("Invalid expiresAt.");
+        if (userId == Guid.Empty) throw new DomainException("Invalid userId.");
+        if (string.IsNullOrWhiteSpace(value)) throw new DomainException("Invalid token value.");
 
         return new RefreshToken()
         {
