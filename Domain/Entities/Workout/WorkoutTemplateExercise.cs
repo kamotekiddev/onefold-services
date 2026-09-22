@@ -2,7 +2,7 @@ using Domain.Entities.Exceptions;
 
 namespace Domain.Entities.Workout;
 
-public class WorkoutExercise : Entity
+public class WorkoutTemplateExercise : Entity
 {
     public required Guid ExerciseId { get; init; }
     public required Guid WorkoutTemplateId { get; init; }
@@ -13,11 +13,11 @@ public class WorkoutExercise : Entity
     public Exercise Exercise { get; init; }
     public WorkoutTemplate WorkoutTemplate { get; init; }
 
-    private WorkoutExercise()
+    private WorkoutTemplateExercise()
     {
     }
 
-    public static WorkoutExercise Create(
+    public static WorkoutTemplateExercise Create(
         Guid workoutTemplateId,
         Guid exerciseId,
         int targetReps,
@@ -36,7 +36,7 @@ public class WorkoutExercise : Entity
         if (restPerSetInSeconds <= 0)
             throw new DomainException("Invalid restPerSet value.");
 
-        return new WorkoutExercise()
+        return new WorkoutTemplateExercise()
         {
             WorkoutTemplateId = workoutTemplateId,
             ExerciseId = exerciseId,

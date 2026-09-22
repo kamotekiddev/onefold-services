@@ -53,7 +53,7 @@ public sealed class CreateWorkoutTemplateHandler(
 
         foreach (var exercise in request.Exercises)
         {
-            var workoutExercise = WorkoutExercise.Create(
+            var workoutExercise = WorkoutTemplateExercise.Create(
                 workoutTemplate.Id,
                 exercise.ExerciseId,
                 exercise.TargetReps,

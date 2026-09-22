@@ -14,7 +14,7 @@ public class User : Entity
     public Profile? Profile { get; private set; }
 
     public ICollection<WorkoutTemplate> WorkoutTemplates { get; private set; } = [];
-    public ICollection<WorkoutExercise> WorkoutExercises { get; private set; } = [];
+    public ICollection<WorkoutTemplateExercise> WorkoutExercises { get; private set; } = [];
     public ICollection<Exercise> Exercises { get; private set; } = [];
 
     private User()

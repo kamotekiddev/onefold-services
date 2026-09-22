@@ -13,7 +13,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Exercise> Exercises { get; set; }
     public DbSet<WorkoutTemplate> WorkoutTemplates { get; set; }
-    public DbSet<WorkoutExercise> WorkoutExercises { get; set; }
+    public DbSet<WorkoutTemplateExercise> WorkoutExercises { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

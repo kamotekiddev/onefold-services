@@ -53,7 +53,7 @@ public sealed class UpdateWorkoutTemplateHandler(
 
             if (workoutExercise is null)
             {
-                var newWorkoutExercise = WorkoutExercise.Create(
+                var newWorkoutExercise = WorkoutTemplateExercise.Create(
                     workoutTemplate.Id,
                     requestExercise.ExerciseId,
                     requestExercise.TargetReps,
