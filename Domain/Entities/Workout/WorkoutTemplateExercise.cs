@@ -6,7 +6,8 @@ public class WorkoutTemplateExercise : Entity
 {
     public required Guid ExerciseId { get; init; }
     public required Guid WorkoutTemplateId { get; init; }
-    public int TargetReps { get; private set; }
+    public int TargetRepsPerSet { get; private set; }
+    public int SetCount { get; private set; }
     public int RestPerSetInSeconds { get; private set; }
     public int OrderIndex { get; private set; }
 
@@ -20,6 +21,7 @@ public class WorkoutTemplateExercise : Entity
     public static WorkoutTemplateExercise Create(
         Guid workoutTemplateId,
         Guid exerciseId,
+        int setCount,
         int targetReps,
         int restPerSetInSeconds,
         int orderIdx)
@@ -36,19 +38,23 @@ public class WorkoutTemplateExercise : Entity
         if (restPerSetInSeconds <= 0)
             throw new DomainException("Invalid restPerSet value.");
 
+        if (setCount <= 0) throw new DomainException("Invalid set value.");
+
         return new WorkoutTemplateExercise()
         {
             WorkoutTemplateId = workoutTemplateId,
             ExerciseId = exerciseId,
-            TargetReps = targetReps,
+            SetCount = setCount,
+            TargetRepsPerSet = targetReps,
             RestPerSetInSeconds = restPerSetInSeconds,
             OrderIndex = orderIdx
         };
     }
 
-    public void Update(int targetReps, int restPerSetInSeconds, int orderIdx)
+    public void Update(int setCount, int targetReps, int restPerSetInSeconds, int orderIdx)
     {
-        TargetReps = targetReps;
+        SetCount = setCount;
+        TargetRepsPerSet = targetReps;
         RestPerSetInSeconds = restPerSetInSeconds;
         OrderIndex = orderIdx;
     }

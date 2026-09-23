@@ -56,6 +56,7 @@ public sealed class CreateWorkoutTemplateHandler(
             var workoutExercise = WorkoutTemplateExercise.Create(
                 workoutTemplate.Id,
                 exercise.ExerciseId,
+                exercise.SetCount,
                 exercise.TargetReps,
                 exercise.RestPerSetInSeconds,
                 exercise.OrderIdx);

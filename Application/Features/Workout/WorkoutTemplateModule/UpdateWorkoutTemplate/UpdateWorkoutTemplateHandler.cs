@@ -56,6 +56,7 @@ public sealed class UpdateWorkoutTemplateHandler(
                 var newWorkoutExercise = WorkoutTemplateExercise.Create(
                     workoutTemplate.Id,
                     requestExercise.ExerciseId,
+                    requestExercise.SetCount,
                     requestExercise.TargetReps,
                     requestExercise.RestPerSetInSeconds,
                     requestExercise.OrderIdx);
@@ -66,6 +67,7 @@ public sealed class UpdateWorkoutTemplateHandler(
             else
             {
                 workoutExercise.Update(
+                    requestExercise.SetCount,
                     requestExercise.TargetReps,
                     requestExercise.RestPerSetInSeconds,
                     requestExercise.OrderIdx);
