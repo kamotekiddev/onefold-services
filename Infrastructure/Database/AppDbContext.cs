@@ -1,6 +1,7 @@
 using Application.Abstractions.Persistence;
 using Domain.Entities;
 using Domain.Entities.Workout;
+using Domain.Entities.WorkoutSession;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Database;
@@ -14,6 +15,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Exercise> Exercises { get; set; }
     public DbSet<WorkoutTemplate> WorkoutTemplates { get; set; }
     public DbSet<WorkoutTemplateExercise> WorkoutExercises { get; set; }
+    public DbSet<WorkoutSession> WorkoutSessions { get; set; }
+    public DbSet<WorkoutSessionExercise> WorkoutSessionExercises { get; set; }
+    public DbSet<WorkoutSet> WorkoutSets { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -24,6 +24,12 @@ public class WorkoutSession : Entity
         DateTimeOffset startedAt,
         DateTimeOffset completedAt)
     {
+        if (workoutTemplateId == Guid.Empty)
+            throw new DomainException("Invalid workoutTemplateId value.");
+
+        if (userId == Guid.Empty)
+            throw new DomainException("Invalid userId value.");
+
         return new WorkoutSession()
         {
             WorkoutTemplateId = workoutTemplateId,
