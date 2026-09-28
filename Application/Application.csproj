@@ -20,7 +20,8 @@
 
     <ItemGroup>
       <Folder Include="Features\Authentication\GoogleSignUp\" />
-      <Folder Include="Features\Workout\ExerciseModule\" />
+      <Folder Include="Features\Workout\Exercise\" />
+      <Folder Include="Features\Workout\Session\SyncSession\" />
     </ItemGroup>
 
 </Project>
