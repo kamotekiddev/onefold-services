@@ -6,13 +6,13 @@ public class WorkoutTemplateExercise : Entity
 {
     public required Guid ExerciseId { get; init; }
     public required Guid WorkoutTemplateId { get; init; }
-    public int TargetRepsPerSet { get; private set; }
-    public int SetCount { get; private set; }
-    public int RestPerSetInSeconds { get; private set; }
-    public int OrderIndex { get; private set; }
+    public int TargetReps { get; private set; }
+    public int TargetSet { get; private set; }
+    public int RestInSeconds { get; private set; }
+    public int SortIndex { get; private set; }
 
     public Exercise Exercise { get; init; }
-    public Workout.Template.WorkoutTemplate WorkoutTemplate { get; init; }
+    public WorkoutTemplate WorkoutTemplate { get; init; }
 
     private WorkoutTemplateExercise()
     {
@@ -44,18 +44,18 @@ public class WorkoutTemplateExercise : Entity
         {
             WorkoutTemplateId = workoutTemplateId,
             ExerciseId = exerciseId,
-            SetCount = setCount,
-            TargetRepsPerSet = targetReps,
-            RestPerSetInSeconds = restPerSetInSeconds,
-            OrderIndex = orderIdx
+            TargetSet = setCount,
+            TargetReps = targetReps,
+            RestInSeconds = restPerSetInSeconds,
+            SortIndex = orderIdx
         };
     }
 
     public void Update(int setCount, int targetReps, int restPerSetInSeconds, int orderIdx)
     {
-        SetCount = setCount;
-        TargetRepsPerSet = targetReps;
-        RestPerSetInSeconds = restPerSetInSeconds;
-        OrderIndex = orderIdx;
+        TargetSet = setCount;
+        TargetReps = targetReps;
+        RestInSeconds = restPerSetInSeconds;
+        SortIndex = orderIdx;
     }
 }

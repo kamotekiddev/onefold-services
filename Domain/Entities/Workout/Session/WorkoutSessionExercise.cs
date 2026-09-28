@@ -6,7 +6,7 @@ public class WorkoutSessionExercise : Entity
 {
     public Guid SessionId { get; private set; }
     public Guid ExerciseId { get; private set; }
-    public int TargetSets { get; private set; }
+    public int TargetSet { get; private set; }
     public int TargetReps { get; private set; }
     public int RestInSeconds { get; private set; }
     public int SortIndex { get; private set; }
@@ -51,7 +51,7 @@ public class WorkoutSessionExercise : Entity
         {
             SessionId = sessionId,
             ExerciseId = exerciseId,
-            TargetSets = targetSets,
+            TargetSet = targetSets,
             TargetReps = targetReps,
             RestInSeconds = restInSeconds,
             SortIndex = sortIndex

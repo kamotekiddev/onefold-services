@@ -16,7 +16,7 @@ public class WorkoutSessionExerciseConfiguration : IEntityTypeConfiguration<Work
         builder.Property(x => x.ExerciseId)
             .IsRequired();
 
-        builder.Property(x => x.TargetSets)
+        builder.Property(x => x.TargetSet)
             .IsRequired();
 
         builder.Property(x => x.TargetReps)

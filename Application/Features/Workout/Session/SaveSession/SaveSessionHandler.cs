@@ -28,10 +28,10 @@ public class SaveSessionHandler(ICurrentUser currentUser, IWorkoutTemplateReposi
             var sessionExercise = WorkoutSessionExercise.Create(
                 session.Id,
                 exerciseRequest.ExerciseId,
-                templateExercise.SetCount,
-                templateExercise.TargetRepsPerSet,
-                templateExercise.RestPerSetInSeconds,
-                templateExercise.OrderIndex);
+                templateExercise.TargetSet,
+                templateExercise.TargetReps,
+                templateExercise.RestInSeconds,
+                templateExercise.SortIndex);
 
             foreach (var set in exerciseRequest.Sets)
             {
