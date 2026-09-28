@@ -60,6 +60,9 @@ public class WorkoutSessionExercise : Entity
 
     public void AddSet(int setNumber, int reps, decimal? weight)
     {
+        if (_sets.Any(x => x.SetNumber == setNumber))
+            throw new WorkoutSetAlreadyExistsException();
+
         var set = WorkoutSet.Create(
             Id,
             setNumber,
