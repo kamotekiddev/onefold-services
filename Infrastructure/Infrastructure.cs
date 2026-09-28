@@ -25,6 +25,7 @@ public static class Infrastructure
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IExerciseRepository, ExerciseRepository>();
         services.AddScoped<IWorkoutTemplateRepository, WorkoutTemplateRepository>();
+        services.AddScoped<IWorkoutSessionRepository, WorkoutSessionRepository>();
 
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<ICurrentUser, CurrentUser>();
