@@ -19,7 +19,7 @@ public class WorkoutSessionConfiguration : IEntityTypeConfiguration<WorkoutSessi
         builder.Property(ws => ws.StartedAt)
             .IsRequired();
 
-        builder.Property(ws => ws.UpdatedAt)
+        builder.Property(ws => ws.CompletedAt)
             .IsRequired();
 
         builder.HasIndex(ws => new { ws.UserId, ws.WorkoutTemplateId });

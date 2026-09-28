@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Onefold.Controllers.Workout
 {
-    [Route("api/[controller]")]
+    [Route("api/workout/[controller]")]
     [ApiController]
     public class TemplateController(
         CreateWorkoutTemplateHandler createWorkoutTemplateHandler,
