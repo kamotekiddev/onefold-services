@@ -1,4 +1,6 @@
-namespace Domain.Entities.Workout;
+using Domain.Entities.Workout;
+
+namespace Domain.Entities.WorkoutSession;
 
 public class WorkoutSessionExercise : Entity
 {
