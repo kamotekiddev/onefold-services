@@ -1,6 +1,6 @@
 using Domain.Entities.Exceptions;
 
-namespace Domain.Entities.Workout;
+namespace Domain.Entities.Workout.Template;
 
 public class WorkoutTemplate : Entity
 {
@@ -13,6 +13,8 @@ public class WorkoutTemplate : Entity
 
     public IReadOnlyCollection<WorkoutTemplateExercise> WorkoutExercises =>
         _workoutExercises.AsReadOnly();
+
+    public ICollection<Session.WorkoutSession> WorkoutSessions { get; init; } = [];
 
     private readonly List<WorkoutTemplateExercise> _workoutExercises = [];
 

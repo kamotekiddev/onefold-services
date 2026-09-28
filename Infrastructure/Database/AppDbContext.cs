@@ -1,7 +1,8 @@
 using Application.Abstractions.Persistence;
 using Domain.Entities;
 using Domain.Entities.Workout;
-using Domain.Entities.WorkoutSession;
+using Domain.Entities.Workout.Session;
+using Domain.Entities.Workout.Template;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Database;

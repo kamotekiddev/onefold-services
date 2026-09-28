@@ -1,4 +1,5 @@
 using Domain.Entities.Exceptions;
+using Domain.Entities.Workout.Template;
 
 namespace Domain.Entities.Workout;
 

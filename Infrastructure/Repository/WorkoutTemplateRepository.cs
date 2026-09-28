@@ -1,5 +1,5 @@
 using Application.Abstractions.Persistence;
-using Domain.Entities.Workout;
+using Domain.Entities.Workout.Template;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 

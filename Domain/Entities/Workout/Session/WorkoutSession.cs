@@ -1,6 +1,7 @@
 using Domain.Entities.Exceptions;
+using Domain.Entities.Workout.Template;
 
-namespace Domain.Entities.WorkoutSession;
+namespace Domain.Entities.Workout.Session;
 
 public class WorkoutSession : Entity
 {
@@ -9,10 +10,11 @@ public class WorkoutSession : Entity
     public DateTimeOffset StartedAt { get; init; }
     public DateTimeOffset CompletedAt { get; init; }
 
-    public ICollection<WorkoutSessionExercise> Exercises => _exercises.AsReadOnly();
+    public WorkoutTemplate WorkoutTemplate { get; init; }
     public User User { get; init; }
+    public ICollection<WorkoutSessionExercise> Exercises => _exercises.AsReadOnly();
 
-    public IList<WorkoutSessionExercise> _exercises = [];
+    private IList<WorkoutSessionExercise> _exercises = [];
 
     private WorkoutSession()
     {

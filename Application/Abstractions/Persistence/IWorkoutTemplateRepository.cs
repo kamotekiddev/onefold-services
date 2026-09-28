@@ -1,4 +1,4 @@
-using Domain.Entities.Workout;
+using Domain.Entities.Workout.Template;
 
 namespace Application.Abstractions.Persistence;
 

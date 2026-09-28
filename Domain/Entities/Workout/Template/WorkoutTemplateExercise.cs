@@ -1,6 +1,6 @@
 using Domain.Entities.Exceptions;
 
-namespace Domain.Entities.Workout;
+namespace Domain.Entities.Workout.Template;
 
 public class WorkoutTemplateExercise : Entity
 {
@@ -12,7 +12,7 @@ public class WorkoutTemplateExercise : Entity
     public int OrderIndex { get; private set; }
 
     public Exercise Exercise { get; init; }
-    public WorkoutTemplate WorkoutTemplate { get; init; }
+    public Workout.Template.WorkoutTemplate WorkoutTemplate { get; init; }
 
     private WorkoutTemplateExercise()
     {

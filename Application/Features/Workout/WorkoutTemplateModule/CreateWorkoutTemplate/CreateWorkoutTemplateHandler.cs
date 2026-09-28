@@ -2,6 +2,7 @@ using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
 using Application.Common.Exceptions;
 using Domain.Entities.Workout;
+using Domain.Entities.Workout.Template;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 

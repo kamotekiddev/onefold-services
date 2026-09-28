@@ -1,6 +1,8 @@
 using System.Net.Mail;
 using Domain.Entities.Exceptions;
 using Domain.Entities.Workout;
+using Domain.Entities.Workout.Session;
+using Domain.Entities.Workout.Template;
 
 namespace Domain.Entities;
 
@@ -16,6 +18,8 @@ public class User : Entity
     public ICollection<WorkoutTemplate> WorkoutTemplates { get; private set; } = [];
     public ICollection<WorkoutTemplateExercise> WorkoutExercises { get; private set; } = [];
     public ICollection<Exercise> Exercises { get; private set; } = [];
+
+    public IReadOnlyCollection<WorkoutSession> WorkoutSessions { get; init; } = [];
 
     private User()
     {
