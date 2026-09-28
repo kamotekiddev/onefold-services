@@ -2,6 +2,7 @@ using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
 using Application.Common.Exceptions;
 using Domain.Entities.Workout;
+using Domain.Entities.Workout.Template;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Features.Workout.WorkoutTemplateModule.UpdateWorkoutTemplate;
@@ -53,9 +54,10 @@ public sealed class UpdateWorkoutTemplateHandler(
 
             if (workoutExercise is null)
             {
-                var newWorkoutExercise = WorkoutExercise.Create(
+                var newWorkoutExercise = WorkoutTemplateExercise.Create(
                     workoutTemplate.Id,
                     requestExercise.ExerciseId,
+                    requestExercise.SetCount,
                     requestExercise.TargetReps,
                     requestExercise.RestPerSetInSeconds,
                     requestExercise.OrderIdx);
@@ -66,6 +68,7 @@ public sealed class UpdateWorkoutTemplateHandler(
             else
             {
                 workoutExercise.Update(
+                    requestExercise.SetCount,
                     requestExercise.TargetReps,
                     requestExercise.RestPerSetInSeconds,
                     requestExercise.OrderIdx);

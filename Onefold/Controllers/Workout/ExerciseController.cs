@@ -3,7 +3,7 @@ using Application.Features.Workout.ExerciseModule.GetExercise;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Onefold.Controllers
+namespace Onefold.Controllers.Workout
 {
     [Route("api/[controller]")]
     [ApiController]

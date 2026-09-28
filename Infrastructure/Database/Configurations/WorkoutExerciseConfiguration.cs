@@ -1,12 +1,12 @@
-using Domain.Entities.Workout;
+using Domain.Entities.Workout.Template;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Database.Configurations;
 
-public class WorkoutExerciseConfiguration : IEntityTypeConfiguration<WorkoutExercise>
+public class WorkoutExerciseConfiguration : IEntityTypeConfiguration<WorkoutTemplateExercise>
 {
-    public void Configure(EntityTypeBuilder<WorkoutExercise> builder)
+    public void Configure(EntityTypeBuilder<WorkoutTemplateExercise> builder)
     {
         builder.HasKey(we => we.Id);
 

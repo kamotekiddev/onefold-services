@@ -1,6 +1,6 @@
 using Domain.Entities.Exceptions;
 
-namespace Domain.Entities.Workout;
+namespace Domain.Entities.Workout.Template;
 
 public class WorkoutTemplate : Entity
 {
@@ -11,10 +11,12 @@ public class WorkoutTemplate : Entity
     public Guid UserId { get; init; }
     public User User { get; init; }
 
-    public IReadOnlyCollection<WorkoutExercise> WorkoutExercises =>
+    public IReadOnlyCollection<WorkoutTemplateExercise> WorkoutExercises =>
         _workoutExercises.AsReadOnly();
 
-    private readonly List<WorkoutExercise> _workoutExercises = [];
+    public ICollection<Session.WorkoutSession> WorkoutSessions { get; init; } = [];
+
+    private readonly List<WorkoutTemplateExercise> _workoutExercises = [];
 
     private WorkoutTemplate()
     {
@@ -34,18 +36,18 @@ public class WorkoutTemplate : Entity
         };
     }
 
-    public void AddExercise(WorkoutExercise workoutExercise)
+    public void AddExercise(WorkoutTemplateExercise workoutTemplateExercise)
     {
-        if (_workoutExercises.Any(e => e.ExerciseId == workoutExercise.ExerciseId))
+        if (_workoutExercises.Any(e => e.ExerciseId == workoutTemplateExercise.ExerciseId))
             throw new WorkoutExerciseAlreadyExistsException("Workout exercise already added in this template.");
 
-        _workoutExercises.Add(workoutExercise);
+        _workoutExercises.Add(workoutTemplateExercise);
     }
 
-    public void RemoveExercise(WorkoutExercise workoutExercise)
+    public void RemoveExercise(WorkoutTemplateExercise workoutTemplateExercise)
     {
-        if (!_workoutExercises.Contains(workoutExercise))
+        if (!_workoutExercises.Contains(workoutTemplateExercise))
             throw new WorkoutExerciseDoesNotExistException("Workout exercise does not exist.");
-        _workoutExercises.Remove(workoutExercise);
+        _workoutExercises.Remove(workoutTemplateExercise);
     }
 }

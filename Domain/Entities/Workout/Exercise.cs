@@ -1,4 +1,5 @@
 using Domain.Entities.Exceptions;
+using Domain.Entities.Workout.Template;
 
 namespace Domain.Entities.Workout;
 
@@ -11,7 +12,7 @@ public class Exercise : Entity
     public Guid? UserId { get; private set; }
     public User? User { get; init; }
 
-    public ICollection<WorkoutExercise> WorkoutExercises { get; init; } = [];
+    public ICollection<WorkoutTemplateExercise> WorkoutExercises { get; init; } = [];
 
     private Exercise()
     {

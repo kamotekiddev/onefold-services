@@ -1,5 +1,5 @@
 using Application.Abstractions.Persistence;
-using Domain.Entities.Workout;
+using Domain.Entities.Workout.Template;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,5 +28,12 @@ public class WorkoutTemplateRepository(AppDbContext db) : IWorkoutTemplateReposi
     public async Task<WorkoutTemplate?> GetByIdAsync(Guid templateId)
     {
         return await db.WorkoutTemplates.FindAsync(templateId);
+    }
+
+    public async Task<WorkoutTemplate?> GetByIdWithExercisesAsync(Guid templateId)
+    {
+        return await db.WorkoutTemplates
+            .Include(x => x.WorkoutExercises)
+            .FirstOrDefaultAsync(x => x.Id == templateId);
     }
 }

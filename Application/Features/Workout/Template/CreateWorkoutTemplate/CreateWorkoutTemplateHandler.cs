@@ -2,6 +2,7 @@ using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
 using Application.Common.Exceptions;
 using Domain.Entities.Workout;
+using Domain.Entities.Workout.Template;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
@@ -53,9 +54,10 @@ public sealed class CreateWorkoutTemplateHandler(
 
         foreach (var exercise in request.Exercises)
         {
-            var workoutExercise = WorkoutExercise.Create(
+            var workoutExercise = WorkoutTemplateExercise.Create(
                 workoutTemplate.Id,
                 exercise.ExerciseId,
+                exercise.SetCount,
                 exercise.TargetReps,
                 exercise.RestPerSetInSeconds,
                 exercise.OrderIdx);

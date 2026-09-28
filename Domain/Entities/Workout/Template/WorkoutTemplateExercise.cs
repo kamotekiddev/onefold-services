@@ -1,25 +1,27 @@
 using Domain.Entities.Exceptions;
 
-namespace Domain.Entities.Workout;
+namespace Domain.Entities.Workout.Template;
 
-public class WorkoutExercise : Entity
+public class WorkoutTemplateExercise : Entity
 {
     public required Guid ExerciseId { get; init; }
     public required Guid WorkoutTemplateId { get; init; }
     public int TargetReps { get; private set; }
-    public int RestPerSetInSeconds { get; private set; }
-    public int OrderIndex { get; private set; }
+    public int TargetSet { get; private set; }
+    public int RestInSeconds { get; private set; }
+    public int SortIndex { get; private set; }
 
     public Exercise Exercise { get; init; }
     public WorkoutTemplate WorkoutTemplate { get; init; }
 
-    private WorkoutExercise()
+    private WorkoutTemplateExercise()
     {
     }
 
-    public static WorkoutExercise Create(
+    public static WorkoutTemplateExercise Create(
         Guid workoutTemplateId,
         Guid exerciseId,
+        int setCount,
         int targetReps,
         int restPerSetInSeconds,
         int orderIdx)
@@ -36,20 +38,24 @@ public class WorkoutExercise : Entity
         if (restPerSetInSeconds <= 0)
             throw new DomainException("Invalid restPerSet value.");
 
-        return new WorkoutExercise()
+        if (setCount <= 0) throw new DomainException("Invalid set value.");
+
+        return new WorkoutTemplateExercise()
         {
             WorkoutTemplateId = workoutTemplateId,
             ExerciseId = exerciseId,
+            TargetSet = setCount,
             TargetReps = targetReps,
-            RestPerSetInSeconds = restPerSetInSeconds,
-            OrderIndex = orderIdx
+            RestInSeconds = restPerSetInSeconds,
+            SortIndex = orderIdx
         };
     }
 
-    public void Update(int targetReps, int restPerSetInSeconds, int orderIdx)
+    public void Update(int setCount, int targetReps, int restPerSetInSeconds, int orderIdx)
     {
+        TargetSet = setCount;
         TargetReps = targetReps;
-        RestPerSetInSeconds = restPerSetInSeconds;
-        OrderIndex = orderIdx;
+        RestInSeconds = restPerSetInSeconds;
+        SortIndex = orderIdx;
     }
 }
