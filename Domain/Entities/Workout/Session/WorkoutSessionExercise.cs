@@ -58,10 +58,8 @@ public class WorkoutSessionExercise : Entity
         };
     }
 
-    public void AddSet(int reps, decimal? weight)
+    public void AddSet(int setNumber, int reps, decimal? weight)
     {
-        var setNumber = _sets.Count + 1;
-
         var set = WorkoutSet.Create(
             Id,
             setNumber,

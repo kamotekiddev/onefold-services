@@ -3,11 +3,11 @@ using Application.Features.Workout.WorkoutTemplateModule.UpdateWorkoutTemplate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Onefold.Controllers
+namespace Onefold.Controllers.Workout
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class WorkoutTemplateController(
+    public class TemplateController(
         CreateWorkoutTemplateHandler createWorkoutTemplateHandler,
         UpdateWorkoutTemplateHandler updateWorkoutTemplateHandler) : ControllerBase
     {
