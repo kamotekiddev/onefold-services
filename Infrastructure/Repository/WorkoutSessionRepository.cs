@@ -12,8 +12,7 @@ public class WorkoutSessionRepository(AppDbContext db) : IWorkoutSessionReposito
         db.WorkoutSessions.Add(session);
     }
 
-    public async Task<WorkoutSession?> GetByIdAsync(
-        Guid sessionId)
+    public async Task<WorkoutSession?> GetByIdAsync(Guid sessionId)
     {
         return await db.WorkoutSessions
             .Include(x => x.Exercises)
@@ -21,5 +20,15 @@ public class WorkoutSessionRepository(AppDbContext db) : IWorkoutSessionReposito
             .Include(x => x.Exercises)
             .ThenInclude(x => x.Sets)
             .FirstOrDefaultAsync(x => x.Id == sessionId);
+    }
+
+    public async Task<IReadOnlyCollection<WorkoutSession>> GetAllByUserIdAsync(Guid userId)
+    {
+        return await db.WorkoutSessions
+            .AsNoTracking()
+            .Include(x => x.WorkoutTemplate)
+            .Where(x => x.UserId == userId)
+            .OrderByDescending(x => x.StartedAt)
+            .ToListAsync();
     }
 }
