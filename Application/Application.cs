@@ -5,6 +5,7 @@ using Application.Features.Authentication.SignInWithEmail;
 using Application.Features.Workout.ExerciseModule.CreateExercise;
 using Application.Features.Workout.ExerciseModule.GetExercise;
 using Application.Features.Workout.Session.GetSessionById;
+using Application.Features.Workout.Session.GetSessions;
 using Application.Features.Workout.Session.SaveSession;
 using Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
 using Domain.Entities;
@@ -26,6 +27,7 @@ public static class Application
         services.AddScoped<CreateWorkoutTemplateHandler>();
         services.AddScoped<SaveSessionHandler>();
         services.AddScoped<GetSessionByIdHandler>();
+        services.AddScoped<GetSessionsHandler>();
 
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
