@@ -1,3 +1,5 @@
+using Domain.Entities.Workout.Session;
+
 namespace Application.Features.Workout.Session.SaveSession;
 
 public sealed record SaveSessionRequest(
@@ -16,5 +18,6 @@ public sealed record SaveSessionExerciseRequest(
 public sealed record SaveSessionWorkoutSetRequest(
     int SetNumber,
     int Reps,
-    decimal? Weight
+    decimal? Weight,
+    WeightUnit? Unit
 );

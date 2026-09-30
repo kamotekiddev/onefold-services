@@ -52,7 +52,8 @@ public sealed class GetSessionByIdHandler(
                             s.Id,
                             s.SetNumber,
                             s.Reps,
-                            s.Weight))
+                            s.Weight,
+                            s.Unit))
                         .ToList()))
                 .ToList());
     }
