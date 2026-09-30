@@ -58,7 +58,7 @@ public class WorkoutSessionExercise : Entity
         };
     }
 
-    public void AddSet(int setNumber, int reps, decimal? weight)
+    public void AddSet(int setNumber, int reps, decimal? weight, WeightUnit? unit)
     {
         if (_sets.Any(x => x.SetNumber == setNumber))
             throw new WorkoutSetAlreadyExistsException();
@@ -67,7 +67,8 @@ public class WorkoutSessionExercise : Entity
             Id,
             setNumber,
             reps,
-            weight);
+            weight,
+            unit);
 
         _sets.Add(set);
     }

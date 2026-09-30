@@ -48,11 +48,11 @@ public class SaveSessionHandler(
                 templateExercise.TargetSet,
                 templateExercise.TargetReps,
                 templateExercise.RestInSeconds,
-                templateExercise.SortIndex);
+                exerciseRequest.SortIndex);
 
             foreach (var set in exerciseRequest.Sets)
             {
-                sessionExercise.AddSet(set.SetNumber, set.Reps, set.Weight);
+                sessionExercise.AddSet(set.SetNumber, set.Reps, set.Weight, set.Unit);
             }
 
             session.AddExercise(sessionExercise);
