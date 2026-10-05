@@ -48,15 +48,32 @@ configure_slot() {
   echo "Successfully configured $slot slot."
 }
 
-# Configure production
+staging_slot_exists() {
+  az webapp deployment slot list \
+    --resource-group "$RESOURCE_GROUP" \
+    --name "$APP_SERVICE_NAME" \
+    --query "[?name=='staging'] | length(@)" \
+    --output tsv
+}
+
+# Always configure production
 configure_slot \
   "production" \
   "${SETTINGS_DIR}/appsettings.json"
 
-# Configure staging
-configure_slot \
-  "staging" \
-  "${SETTINGS_DIR}/appsettings-staging.json"
+# Configure staging only if the slot exists
+if [[ "$(staging_slot_exists)" -eq 1 ]]; then
+  echo ""
+  echo "Staging slot found. Configuring staging..."
+
+  configure_slot \
+    "staging" \
+    "${SETTINGS_DIR}/appsettings-staging.json"
+else
+  echo ""
+  echo "Staging slot does not exist for $APP_SERVICE_NAME."
+  echo "Skipping staging configuration."
+fi
 
 echo ""
 echo "App Service configuration completed successfully."
