@@ -1,0 +1,150 @@
+name: Deploy Onefold
+
+on:
+  push:
+    branches:
+      - prod
+      - dev
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy"
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+
+  # ============================================================
+  # Build & Push Docker Image
+  # ============================================================
+
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image: ${{ steps.image.outputs.image }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine image
+        id: image
+        run: |
+          IMAGE="${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}"
+          echo "image=${IMAGE,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t "${{ steps.image.outputs.image }}" \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push "${{ steps.image.outputs.image }}"
+
+
+  # ============================================================
+  # Configure Azure App Service
+  # ============================================================
+
+  configure:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine environment
+        id: environment
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+            echo "environment=prod" >> "$GITHUB_OUTPUT"
+          else
+            echo "environment=dev" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Configure App Service
+        run: |
+          chmod +x ./cicd/configure-appservice.sh
+
+          ./cicd/configure-appservice.sh \
+            "${{ steps.environment.outputs.environment }}"
+
+
+  # ============================================================
+  # Deploy Docker Image
+  # ============================================================
+
+  deploy:
+    needs:
+      - build
+      - configure
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Determine environment
+        id: environment
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+            echo "environment=prod" >> "$GITHUB_OUTPUT"
+          else
+            echo "environment=dev" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy container to Azure
+        run: |
+          az webapp config container set \
+            --resource-group d-one-labs \
+            --name "onefold-api-${{ steps.environment.outputs.environment }}" \
+            --container-image-name "${{ needs.build.outputs.image }}" \
+            --container-registry-url "https://ghcr.io"
+
+      - name: Restart App Service
+        run: |
+          az webapp restart \
+            --resource-group d-one-labs \
+            --name "onefold-api-${{ steps.environment.outputs.environment }}"
