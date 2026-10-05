@@ -3,8 +3,7 @@ name: Deploy Onefold
 on:
   push:
     branches:
-      - prod
-      - dev
+      - master
 
   workflow_dispatch:
     inputs:
@@ -22,11 +21,38 @@ env:
 
 jobs:
 
-  # ============================================================
-  # Build & Push Docker Image
-  # ============================================================
+  # --------------------------------------------------
+  # Determine deployment environment
+  # --------------------------------------------------
+  environment:
+    runs-on: ubuntu-latest
 
+    outputs:
+      environment: ${{ steps.environment.outputs.environment }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine deployment environment
+        id: environment
+        env:
+          INPUT_ENVIRONMENT: ${{ inputs.environment }}
+        run: |
+          chmod +x ./cicd/determine-environment.sh
+
+          ENVIRONMENT=$(./cicd/determine-environment.sh)
+
+          echo "Deployment environment: $ENVIRONMENT"
+          echo "environment=$ENVIRONMENT" >> "$GITHUB_OUTPUT"
+
+
+  # --------------------------------------------------
+  # Build and push Docker image
+  # --------------------------------------------------
   build:
+    needs: environment
+
     runs-on: ubuntu-latest
 
     permissions:
@@ -42,8 +68,11 @@ jobs:
 
       - name: Determine image
         id: image
+        shell: bash
         run: |
           IMAGE="${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}"
+
+          # GHCR image names must be lowercase
           echo "image=${IMAGE,,}" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
@@ -64,12 +93,15 @@ jobs:
           docker push "${{ steps.image.outputs.image }}"
 
 
-  # ============================================================
+  # --------------------------------------------------
   # Configure Azure App Service
-  # ============================================================
-
+  # --------------------------------------------------
   configure:
+    needs: environment
+
     runs-on: ubuntu-latest
+
+    environment: ${{ needs.environment.outputs.environment }}
 
     permissions:
       id-token: write
@@ -78,15 +110,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Determine environment
-        id: environment
-        run: |
-          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
-            echo "environment=prod" >> "$GITHUB_OUTPUT"
-          else
-            echo "environment=dev" >> "$GITHUB_OUTPUT"
-          fi
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -100,34 +123,27 @@ jobs:
           chmod +x ./cicd/configure-appservice.sh
 
           ./cicd/configure-appservice.sh \
-            "${{ steps.environment.outputs.environment }}"
+            "${{ needs.environment.outputs.environment }}"
 
 
-  # ============================================================
-  # Deploy Docker Image
-  # ============================================================
-
+  # --------------------------------------------------
+  # Deploy Docker image to Azure
+  # --------------------------------------------------
   deploy:
     needs:
+      - environment
       - build
       - configure
 
     runs-on: ubuntu-latest
+
+    environment: ${{ needs.environment.outputs.environment }}
 
     permissions:
       id-token: write
       contents: read
 
     steps:
-      - name: Determine environment
-        id: environment
-        run: |
-          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
-            echo "environment=prod" >> "$GITHUB_OUTPUT"
-          else
-            echo "environment=dev" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -139,7 +155,7 @@ jobs:
         run: |
           az webapp config container set \
             --resource-group d-one-labs \
-            --name "onefold-api-${{ steps.environment.outputs.environment }}" \
+            --name "onefold-api-${{ needs.environment.outputs.environment }}" \
             --container-image-name "${{ needs.build.outputs.image }}" \
             --container-registry-url "https://ghcr.io"
 
@@ -147,4 +163,4 @@ jobs:
         run: |
           az webapp restart \
             --resource-group d-one-labs \
-            --name "onefold-api-${{ steps.environment.outputs.environment }}"
+            --name "onefold-api-${{ needs.environment.outputs.environment }}"
