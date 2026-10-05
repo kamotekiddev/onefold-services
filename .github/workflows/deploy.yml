@@ -31,20 +31,14 @@ jobs:
       environment: ${{ steps.environment.outputs.environment }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Determine deployment environment
+      - name: Set deployment environment
         id: environment
-        env:
-          INPUT_ENVIRONMENT: ${{ inputs.environment }}
         run: |
-          chmod +x ./cicd/determine-environment.sh
-
-          ENVIRONMENT=$(./cicd/determine-environment.sh)
-
-          echo "Deployment environment: $ENVIRONMENT"
-          echo "environment=$ENVIRONMENT" >> "$GITHUB_OUTPUT"
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "environment=dev" >> "$GITHUB_OUTPUT"
+          else
+            echo "environment=${{ inputs.environment }}" >> "$GITHUB_OUTPUT"
+          fi
 
 
   # --------------------------------------------------
@@ -83,15 +77,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: |
-          docker build \
-            -f Onefold/Dockerfile
-            -t "${{ steps.image.outputs.image }}" \
-            .
+        run: docker build -f Onefold/Dockerfile -t "${{ steps.image.outputs.image }}" .
 
       - name: Push Docker image
-        run: |
-          docker push "${{ steps.image.outputs.image }}"
+        run: docker push "${{ steps.image.outputs.image }}"
 
 
   # --------------------------------------------------
