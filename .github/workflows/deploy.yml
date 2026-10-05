@@ -3,8 +3,7 @@ name: Deploy Onefold
 on:
   push:
     branches:
-      - prod
-      - dev
+      - master
 
   workflow_dispatch:
     inputs:
@@ -16,17 +15,43 @@ on:
           - dev
           - prod
 
+      release_tag:
+        description: "Production release tag (e.g. release-1.0.0)"
+        required: false
+        type: string
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
 
-  # ============================================================
-  # Build & Push Docker Image
-  # ============================================================
+  # --------------------------------------------------
+  # Determine deployment environment
+  # --------------------------------------------------
+  environment:
+    runs-on: ubuntu-latest
 
+    outputs:
+      environment: ${{ steps.environment.outputs.environment }}
+
+    steps:
+      - name: Set deployment environment
+        id: environment
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "environment=dev" >> "$GITHUB_OUTPUT"
+          else
+            echo "environment=${{ inputs.environment }}" >> "$GITHUB_OUTPUT"
+          fi
+
+
+  # --------------------------------------------------
+  # Build and push Docker image
+  # --------------------------------------------------
   build:
+    needs: environment
+
     runs-on: ubuntu-latest
 
     permissions:
@@ -42,9 +67,37 @@ jobs:
 
       - name: Determine image
         id: image
+        shell: bash
         run: |
-          IMAGE="${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}"
-          echo "image=${IMAGE,,}" >> "$GITHUB_OUTPUT"
+          ENVIRONMENT="${{ needs.environment.outputs.environment }}"
+
+          if [[ "$ENVIRONMENT" == "dev" ]]; then
+            TAG="dev"
+          else
+            RELEASE_TAG="${{ inputs.release_tag }}"
+
+            if [[ -z "$RELEASE_TAG" ]]; then
+              echo "Error: release_tag is required for production deployments."
+              exit 1
+            fi
+
+            if [[ ! "$RELEASE_TAG" =~ ^release-[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Error: release_tag must follow the format release-X.Y.Z"
+              echo "Example: release-1.0.0"
+              exit 1
+            fi
+
+            TAG="prod-${RELEASE_TAG}"
+          fi
+
+          IMAGE="${REGISTRY}/${IMAGE_NAME}:${TAG}"
+
+          # GHCR image names must be lowercase
+          IMAGE="${IMAGE,,}"
+
+          echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
+
+          echo "Docker image: ${IMAGE}"
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -56,6 +109,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
+            -f Onefold/Dockerfile \
             -t "${{ steps.image.outputs.image }}" \
             .
 
@@ -64,12 +118,15 @@ jobs:
           docker push "${{ steps.image.outputs.image }}"
 
 
-  # ============================================================
+  # --------------------------------------------------
   # Configure Azure App Service
-  # ============================================================
-
+  # --------------------------------------------------
   configure:
+    needs: environment
+
     runs-on: ubuntu-latest
+
+    environment: ${{ needs.environment.outputs.environment }}
 
     permissions:
       id-token: write
@@ -78,15 +135,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Determine environment
-        id: environment
-        run: |
-          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
-            echo "environment=prod" >> "$GITHUB_OUTPUT"
-          else
-            echo "environment=dev" >> "$GITHUB_OUTPUT"
-          fi
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -100,34 +148,27 @@ jobs:
           chmod +x ./cicd/configure-appservice.sh
 
           ./cicd/configure-appservice.sh \
-            "${{ steps.environment.outputs.environment }}"
+            "${{ needs.environment.outputs.environment }}"
 
 
-  # ============================================================
-  # Deploy Docker Image
-  # ============================================================
-
+  # --------------------------------------------------
+  # Deploy Docker image to Azure
+  # --------------------------------------------------
   deploy:
     needs:
+      - environment
       - build
       - configure
 
     runs-on: ubuntu-latest
+
+    environment: ${{ needs.environment.outputs.environment }}
 
     permissions:
       id-token: write
       contents: read
 
     steps:
-      - name: Determine environment
-        id: environment
-        run: |
-          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
-            echo "environment=prod" >> "$GITHUB_OUTPUT"
-          else
-            echo "environment=dev" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -139,7 +180,7 @@ jobs:
         run: |
           az webapp config container set \
             --resource-group d-one-labs \
-            --name "onefold-api-${{ steps.environment.outputs.environment }}" \
+            --name "onefold-api-${{ needs.environment.outputs.environment }}" \
             --container-image-name "${{ needs.build.outputs.image }}" \
             --container-registry-url "https://ghcr.io"
 
@@ -147,4 +188,4 @@ jobs:
         run: |
           az webapp restart \
             --resource-group d-one-labs \
-            --name "onefold-api-${{ steps.environment.outputs.environment }}"
+            --name "onefold-api-${{ needs.environment.outputs.environment }}"
