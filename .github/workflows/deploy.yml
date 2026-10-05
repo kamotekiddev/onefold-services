@@ -85,6 +85,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
+            -f Onefold/Dockerfile
             -t "${{ steps.image.outputs.image }}" \
             .
 
