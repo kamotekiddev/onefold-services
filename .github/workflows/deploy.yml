@@ -152,6 +152,196 @@ jobs:
 
 
   # --------------------------------------------------
+  # Run EF Core database migrations
+  # --------------------------------------------------
+  migrate:
+    needs:
+      - environment
+      - build
+      - configure
+
+    runs-on: ubuntu-latest
+
+    environment: ${{ needs.environment.outputs.environment }}
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # --------------------------------------------------
+      # Determine Azure resources
+      # --------------------------------------------------
+      - name: Determine migration resources
+        id: resources
+        shell: bash
+        run: |
+          ENVIRONMENT="${{ needs.environment.outputs.environment }}"
+
+          echo "environment=${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
+          echo "db_server=onefold-db-${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
+          echo "key_vault=onefold-kv-${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
+
+          echo "Environment: ${ENVIRONMENT}"
+          echo "Database server: onefold-db-${ENVIRONMENT}"
+          echo "Key Vault: onefold-kv-${ENVIRONMENT}"
+
+      # --------------------------------------------------
+      # Get GitHub Actions runner public IP
+      # --------------------------------------------------
+      - name: Get runner public IP
+        id: runner-ip
+        shell: bash
+        run: |
+          IP=$(curl --fail --silent --show-error https://api.ipify.org)
+
+          if [[ ! "$IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid public IP: $IP"
+            exit 1
+          fi
+
+          echo "ip=${IP}" >> "$GITHUB_OUTPUT"
+
+          echo "GitHub Actions runner IP: ${IP}"
+
+      # --------------------------------------------------
+      # Temporarily allow GitHub Actions runner
+      # --------------------------------------------------
+      - name: Allow runner IP in PostgreSQL firewall
+        env:
+          DB_SERVER: ${{ steps.resources.outputs.db_server }}
+          RUNNER_IP: ${{ steps.runner-ip.outputs.ip }}
+        run: |
+          az postgres flexible-server firewall-rule create \
+            --resource-group d-one-labs \
+            --server-name "$DB_SERVER" \
+            --name "github-actions-${{ github.run_id }}" \
+            --start-ip-address "$RUNNER_IP" \
+            --end-ip-address "$RUNNER_IP"
+
+          echo "Runner IP ${RUNNER_IP} allowed on ${DB_SERVER}."
+
+
+      # --------------------------------------------------
+      # Always remove the firewall rule
+      # --------------------------------------------------
+      - name: Configure firewall cleanup
+        if: always()
+        env:
+          DB_SERVER: ${{ steps.resources.outputs.db_server }}
+        run: |
+          echo "Firewall cleanup will run when this job exits."
+
+          cleanup() {
+            echo "Removing temporary PostgreSQL firewall rule..."
+
+            az postgres flexible-server firewall-rule delete \
+              --resource-group d-one-labs \
+              --server-name "$DB_SERVER" \
+              --name "github-actions-${{ github.run_id }}" \
+              --yes || true
+
+            echo "Firewall cleanup completed."
+          }
+
+          trap cleanup EXIT
+
+          echo "Firewall cleanup registered."
+
+
+      # --------------------------------------------------
+      # Get database connection string from Key Vault
+      # --------------------------------------------------
+      - name: Get database connection string
+        id: database
+        env:
+          KEY_VAULT: ${{ steps.resources.outputs.key_vault }}
+        shell: bash
+        run: |
+          CONNECTION_STRING=$(az keyvault secret show \
+            --vault-name "$KEY_VAULT" \
+            --name "OnefoldDb" \
+            --query value \
+            --output tsv)
+
+          if [[ -z "$CONNECTION_STRING" ]]; then
+            echo "Database connection string is empty."
+            exit 1
+          fi
+
+          echo "::add-mask::$CONNECTION_STRING"
+
+          {
+            echo "connection_string<<EOF"
+            echo "$CONNECTION_STRING"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Database connection string retrieved from Key Vault."
+
+
+      # --------------------------------------------------
+      # Install EF Core CLI
+      # --------------------------------------------------
+      - name: Install EF Core CLI
+        run: |
+          dotnet tool install --global dotnet-ef --version 10.0.12
+
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+          dotnet ef --version
+
+
+      # --------------------------------------------------
+      # Restore dependencies
+      # --------------------------------------------------
+      - name: Restore dependencies
+        run: |
+          dotnet restore Onefold/Onefold.csproj
+
+
+      # --------------------------------------------------
+      # Run database migrations
+      # --------------------------------------------------
+      - name: Run database migrations
+        env:
+          ASPNETCORE_ENVIRONMENT: Production
+          ONEFOLD_DB_CONNECTION: ${{ steps.database.outputs.connection_string }}
+        run: |
+          dotnet ef database update \
+            --project Infrastructure/Infrastructure.csproj \
+            --startup-project Onefold/Onefold.csproj \
+            --context AppDbContext \
+            --connection "$ONEFOLD_DB_CONNECTION"
+
+      # --------------------------------------------------
+      # Remove temporary firewall rule
+      # --------------------------------------------------
+      - name: Remove runner IP from PostgreSQL firewall
+        if: always()
+        env:
+          DB_SERVER: ${{ steps.resources.outputs.db_server }}
+        run: |
+          az postgres flexible-server firewall-rule delete \
+            --resource-group d-one-labs \
+            --server-name "$DB_SERVER" \
+            --name "github-actions-${{ github.run_id }}" \
+            --yes || true
+
+          echo "Runner IP removed from PostgreSQL firewall."
+
+
+  # --------------------------------------------------
   # Deploy Docker image to Azure
   # --------------------------------------------------
   deploy:
@@ -159,6 +349,7 @@ jobs:
       - environment
       - build
       - configure
+      - migrate
 
     runs-on: ubuntu-latest
 
