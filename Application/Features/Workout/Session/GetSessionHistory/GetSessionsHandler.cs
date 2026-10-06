@@ -3,7 +3,7 @@ using Application.Abstractions.Persistence;
 using Application.Dtos;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Workout.Session.GetSessions;
+namespace Application.Features.Workout.Session.GetSessionHistory;
 
 public sealed class GetSessionsHandler(
     IWorkoutSessionRepository workoutSessionRepository,
