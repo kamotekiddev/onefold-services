@@ -5,7 +5,7 @@ using Application.Features.Authentication.SignInWithEmail;
 using Application.Features.Workout.ExerciseModule.CreateExercise;
 using Application.Features.Workout.ExerciseModule.GetExercise;
 using Application.Features.Workout.Session.GetSessionById;
-using Application.Features.Workout.Session.GetSessions;
+using Application.Features.Workout.Session.GetSessionHistory;
 using Application.Features.Workout.Session.SaveSession;
 using Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
 using Domain.Entities;

@@ -1,5 +1,5 @@
 using Application.Features.Workout.Session.GetSessionById;
-using Application.Features.Workout.Session.GetSessions;
+using Application.Features.Workout.Session.GetSessionHistory;
 using Application.Features.Workout.Session.SaveSession;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
