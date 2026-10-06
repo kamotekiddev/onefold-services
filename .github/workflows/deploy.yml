@@ -44,7 +44,7 @@ jobs:
           else
             echo "environment=${{ inputs.environment }}" >> "$GITHUB_OUTPUT"
           fi
-
+  
 
   # --------------------------------------------------
   # Build and push Docker image
@@ -70,33 +70,33 @@ jobs:
         shell: bash
         run: |
           ENVIRONMENT="${{ needs.environment.outputs.environment }}"
-
+          
           if [[ "$ENVIRONMENT" == "dev" ]]; then
             TAG="dev"
           else
             RELEASE_TAG="${{ inputs.release_tag }}"
-
+          
             if [[ -z "$RELEASE_TAG" ]]; then
               echo "Error: release_tag is required for production deployments."
               exit 1
             fi
-
+          
             if [[ ! "$RELEASE_TAG" =~ ^release-[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
               echo "Error: release_tag must follow the format release-X.Y.Z"
               echo "Example: release-1.0.0"
               exit 1
             fi
-
+          
             TAG="prod-${RELEASE_TAG}"
           fi
-
+          
           IMAGE="${REGISTRY}/${IMAGE_NAME}:${TAG}"
-
+          
           # GHCR image names must be lowercase
           IMAGE="${IMAGE,,}"
-
+          
           echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
-
+          
           echo "Docker image: ${IMAGE}"
 
       - name: Log in to GHCR
@@ -116,7 +116,7 @@ jobs:
       - name: Push Docker image
         run: |
           docker push "${{ steps.image.outputs.image }}"
-
+  
 
   # --------------------------------------------------
   # Configure Azure App Service
@@ -146,10 +146,10 @@ jobs:
       - name: Configure App Service
         run: |
           chmod +x ./cicd/configure-appservice.sh
-
+          
           ./cicd/configure-appservice.sh \
             "${{ needs.environment.outputs.environment }}"
-
+  
 
   # --------------------------------------------------
   # Run EF Core database migrations
@@ -160,7 +160,7 @@ jobs:
       - build
       - configure
 
-    runs-on: ubuntu-latest
+    runs-on: [ self-hosted, macOS, ARM64 ]
 
     environment: ${{ needs.environment.outputs.environment }}
 
@@ -187,11 +187,11 @@ jobs:
         shell: bash
         run: |
           ENVIRONMENT="${{ needs.environment.outputs.environment }}"
-
+          
           echo "environment=${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
           echo "db_server=onefold-db-${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
           echo "key_vault=onefold-kv-${ENVIRONMENT}" >> "$GITHUB_OUTPUT"
-
+          
           echo "Environment: ${ENVIRONMENT}"
           echo "Database server: onefold-db-${ENVIRONMENT}"
           echo "Key Vault: onefold-kv-${ENVIRONMENT}"
@@ -204,14 +204,14 @@ jobs:
         shell: bash
         run: |
           IP=$(curl --fail --silent --show-error https://api.ipify.org)
-
+          
           if [[ ! "$IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Invalid public IP: $IP"
             exit 1
           fi
-
+          
           echo "ip=${IP}" >> "$GITHUB_OUTPUT"
-
+          
           echo "GitHub Actions runner IP: ${IP}"
 
       # --------------------------------------------------
@@ -228,36 +228,20 @@ jobs:
             --name "github-actions-${{ github.run_id }}" \
             --start-ip-address "$RUNNER_IP" \
             --end-ip-address "$RUNNER_IP"
-
+          
           echo "Runner IP ${RUNNER_IP} allowed on ${DB_SERVER}."
 
-
       # --------------------------------------------------
-      # Always remove the firewall rule
+      # Verify firewall rule
       # --------------------------------------------------
-      - name: Configure firewall cleanup
-        if: always()
+      - name: Verify PostgreSQL firewall rule
         env:
           DB_SERVER: ${{ steps.resources.outputs.db_server }}
         run: |
-          echo "Firewall cleanup will run when this job exits."
-
-          cleanup() {
-            echo "Removing temporary PostgreSQL firewall rule..."
-
-            az postgres flexible-server firewall-rule delete \
-              --resource-group d-one-labs \
-              --server-name "$DB_SERVER" \
-              --name "github-actions-${{ github.run_id }}" \
-              --yes || true
-
-            echo "Firewall cleanup completed."
-          }
-
-          trap cleanup EXIT
-
-          echo "Firewall cleanup registered."
-
+          az postgres flexible-server firewall-rule show \
+            --resource-group d-one-labs \
+            --server-name "$DB_SERVER" \
+            --name "github-actions-${{ github.run_id }}"
 
       # --------------------------------------------------
       # Get database connection string from Key Vault
@@ -273,22 +257,22 @@ jobs:
             --name "OnefoldDb" \
             --query value \
             --output tsv)
-
+          
           if [[ -z "$CONNECTION_STRING" ]]; then
             echo "Database connection string is empty."
             exit 1
           fi
-
+          
           echo "::add-mask::$CONNECTION_STRING"
-
+          
           {
             echo "connection_string<<EOF"
             echo "$CONNECTION_STRING"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
-
+          
           echo "Database connection string retrieved from Key Vault."
-
+      
 
       # --------------------------------------------------
       # Install EF Core CLI
@@ -296,11 +280,11 @@ jobs:
       - name: Install EF Core CLI
         run: |
           dotnet tool install --global dotnet-ef --version 10.0.12
-
+          
           echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
-
+          
           dotnet ef --version
-
+      
 
       # --------------------------------------------------
       # Restore dependencies
@@ -308,7 +292,7 @@ jobs:
       - name: Restore dependencies
         run: |
           dotnet restore Onefold/Onefold.csproj
-
+      
 
       # --------------------------------------------------
       # Run database migrations
@@ -323,6 +307,7 @@ jobs:
             --startup-project Onefold/Onefold.csproj \
             --context AppDbContext \
             --connection "$ONEFOLD_DB_CONNECTION"
+      
 
       # --------------------------------------------------
       # Remove temporary firewall rule
@@ -337,9 +322,9 @@ jobs:
             --server-name "$DB_SERVER" \
             --name "github-actions-${{ github.run_id }}" \
             --yes || true
-
+          
           echo "Runner IP removed from PostgreSQL firewall."
-
+  
 
   # --------------------------------------------------
   # Deploy Docker image to Azure
