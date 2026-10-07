@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
 using Application;
 using Infrastructure;
+using Infrastructure.Database;
+using Infrastructure.Database.Seeder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider
+        .GetRequiredService<AppDbContext>();
+
+    await DatabaseSeeder.SeedAsync(dbContext);
+
     app.MapOpenApi();
 }
 
