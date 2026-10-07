@@ -30,10 +30,11 @@ public class WorkoutTemplateRepository(AppDbContext db) : IWorkoutTemplateReposi
         return await db.WorkoutTemplates.FindAsync(templateId);
     }
 
-    public async Task<WorkoutTemplate?> GetByIdWithExercisesAsync(Guid templateId)
+    public async Task<WorkoutTemplate?> GetWithExercisesById(Guid templateId)
     {
         return await db.WorkoutTemplates
             .Include(x => x.WorkoutExercises)
+            .ThenInclude(x => x.Exercise)
             .FirstOrDefaultAsync(x => x.Id == templateId);
     }
 }

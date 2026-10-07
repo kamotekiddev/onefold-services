@@ -1,3 +1,4 @@
+using Application.Features.Workout.Template.GetWorkoutTemplateById;
 using Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
 using Application.Features.Workout.WorkoutTemplateModule.UpdateWorkoutTemplate;
 using Microsoft.AspNetCore.Authorization;
@@ -9,13 +10,22 @@ namespace Onefold.Controllers.Workout
     [ApiController]
     public class TemplateController(
         CreateWorkoutTemplateHandler createWorkoutTemplateHandler,
-        UpdateWorkoutTemplateHandler updateWorkoutTemplateHandler) : ControllerBase
+        UpdateWorkoutTemplateHandler updateWorkoutTemplateHandler,
+        GetWorkoutTemplateByIdHandler getWorkoutTemplateByIdHandler) : ControllerBase
     {
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateWorkoutTemplateRequest request)
         {
             var result = await createWorkoutTemplateHandler.ExecuteAsync(request);
+            return Ok(result);
+        }
+
+        [HttpGet("{id:guid}")]
+        [Authorize]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
+        {
+            var result = await getWorkoutTemplateByIdHandler.HandleAsync(id);
             return Ok(result);
         }
 
