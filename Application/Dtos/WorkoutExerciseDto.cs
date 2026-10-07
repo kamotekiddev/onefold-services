@@ -5,5 +5,6 @@ public sealed record WorkoutExerciseDto(
     Guid ExerciseId,
     string ExerciseName,
     int Sets,
-    int Reps
+    int Reps,
+    int SortIndex
 );

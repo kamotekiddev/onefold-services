@@ -17,7 +17,7 @@ public class SaveSessionHandler(
     {
         var userId = currentUser.UserId;
 
-        var template = await workoutTemplateRepository.GetByIdWithExercisesAsync(request.WorkoutTemplateId);
+        var template = await workoutTemplateRepository.GetWithExercisesById(request.WorkoutTemplateId);
 
         if (template is null)
         {
