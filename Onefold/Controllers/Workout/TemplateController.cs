@@ -1,7 +1,6 @@
 using Application.Features.Workout.Template.CreateWorkoutTemplate;
 using Application.Features.Workout.Template.GetWorkoutTemplateById;
 using Application.Features.Workout.Template.UpdateWorkoutTemplate;
-using Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
