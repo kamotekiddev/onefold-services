@@ -1,12 +1,12 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
 using Application.Common.Exceptions;
-using Domain.Entities.Workout;
+using Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
 using Domain.Entities.Workout.Template;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
+namespace Application.Features.Workout.Template.CreateWorkoutTemplate;
 
 public sealed class CreateWorkoutTemplateHandler(
     IWorkoutTemplateRepository workoutTemplateRepository,
@@ -83,7 +83,7 @@ public sealed class CreateWorkoutTemplateHandler(
         return exerciseIds.Where(id => !availableExerciseIds.Contains(id)).ToHashSet();
     }
 
-    private HashSet<Guid> GetAvailableIds(IReadOnlyCollection<Exercise> exercises)
+    private HashSet<Guid> GetAvailableIds(IReadOnlyCollection<Domain.Entities.Workout.Exercise> exercises)
     {
         return exercises.Select(e => e.Id).ToHashSet();
     }

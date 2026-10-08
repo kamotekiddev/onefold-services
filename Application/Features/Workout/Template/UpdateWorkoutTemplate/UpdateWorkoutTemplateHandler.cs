@@ -1,11 +1,10 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
 using Application.Common.Exceptions;
-using Domain.Entities.Workout;
 using Domain.Entities.Workout.Template;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Workout.WorkoutTemplateModule.UpdateWorkoutTemplate;
+namespace Application.Features.Workout.Template.UpdateWorkoutTemplate;
 
 public sealed class UpdateWorkoutTemplateHandler(
     IWorkoutTemplateRepository workoutTemplateRepository,
@@ -86,7 +85,7 @@ public sealed class UpdateWorkoutTemplateHandler(
         return request.Exercises.Select(e => e.ExerciseId).ToList();
     }
 
-    private ICollection<Guid> GetAvailableIds(IReadOnlyCollection<Exercise> exercises)
+    private ICollection<Guid> GetAvailableIds(IReadOnlyCollection<Domain.Entities.Workout.Exercise> exercises)
     {
         return exercises.Select(e => e.Id).ToList();
     }

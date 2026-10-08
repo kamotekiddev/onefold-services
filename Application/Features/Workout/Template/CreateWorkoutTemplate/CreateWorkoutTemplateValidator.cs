@@ -1,3 +1,4 @@
+using Application.Features.Workout.Template;
 using FluentValidation;
 
 namespace Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;

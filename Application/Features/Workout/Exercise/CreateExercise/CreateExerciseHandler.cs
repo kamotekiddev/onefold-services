@@ -1,10 +1,9 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
 using Application.Common.Exceptions;
-using Domain.Entities.Workout;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.Workout.ExerciseModule.CreateExercise;
+namespace Application.Features.Workout.Exercise.CreateExercise;
 
 public sealed class CreateExerciseHandler(
     IExerciseRepository exerciseRepository,
@@ -23,7 +22,7 @@ public sealed class CreateExerciseHandler(
             throw new ConflictException("Exercise already exist.");
         }
 
-        exercise = Exercise.Create(request.Name);
+        exercise = Domain.Entities.Workout.Exercise.Create(request.Name, request.Type, request.Description);
         exercise.AttachToUser(currentUser.UserId);
 
         exerciseRepository.Add(exercise);
