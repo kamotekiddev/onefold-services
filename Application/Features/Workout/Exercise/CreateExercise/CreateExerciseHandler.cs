@@ -1,6 +1,7 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
 using Application.Common.Exceptions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Features.Workout.Exercise.CreateExercise;
@@ -9,10 +10,13 @@ public sealed class CreateExerciseHandler(
     IExerciseRepository exerciseRepository,
     IUnitOfWork unitOfWork,
     ICurrentUser currentUser,
+    IValidator<CreateExerciseRequest> validator,
     ILogger<CreateExerciseHandler> logger)
 {
     public async Task<CreateExerciseResponse> ExecuteAsync(CreateExerciseRequest request)
     {
+        await validator.ValidateAndThrowAsync(request);
+
         var name = request.Name.Trim();
         var exercise = await exerciseRepository.GetByNameAsync(name);
 
