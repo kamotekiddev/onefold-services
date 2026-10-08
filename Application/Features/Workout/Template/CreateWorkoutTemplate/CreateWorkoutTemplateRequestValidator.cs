@@ -2,10 +2,10 @@ using FluentValidation;
 
 namespace Application.Features.Workout.Template.CreateWorkoutTemplate;
 
-public sealed class CreateWorkoutTemplateExerciseValidator
+public sealed class CreateWorkoutTemplateRequestValidator
     : AbstractValidator<CreateWorkoutTemplateRequest>
 {
-    public CreateWorkoutTemplateExerciseValidator()
+    public CreateWorkoutTemplateRequestValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty()
