@@ -353,6 +353,9 @@ namespace Infrastructure.Migrations
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
 
+                    b.Property<int?>("WeightUnit")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("WorkoutTemplateId")
                         .HasColumnType("uuid");
 

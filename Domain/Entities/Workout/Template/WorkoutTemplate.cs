@@ -1,20 +1,24 @@
 using Domain.Entities.Exceptions;
+using Domain.Entities.Workout.Session;
 
 namespace Domain.Entities.Workout.Template;
 
 public class WorkoutTemplate : Entity
 {
     public string Name { get; private set; }
+
     public string? Description { get; private set; }
+
     public int RestInMinutes { get; private set; }
 
     public Guid UserId { get; init; }
+
     public User User { get; init; }
 
     public IReadOnlyCollection<WorkoutTemplateExercise> WorkoutExercises =>
         _workoutExercises.AsReadOnly();
 
-    public ICollection<Session.WorkoutSession> WorkoutSessions { get; init; } = [];
+    public ICollection<WorkoutSession> WorkoutSessions { get; init; } = [];
 
     private readonly List<WorkoutTemplateExercise> _workoutExercises = [];
 

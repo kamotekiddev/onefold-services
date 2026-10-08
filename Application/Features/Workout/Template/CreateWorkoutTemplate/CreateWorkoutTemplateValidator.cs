@@ -1,4 +1,5 @@
 using Application.Features.Workout.Template;
+using Application.Features.Workout.Template.CreateWorkoutTemplate;
 using FluentValidation;
 
 namespace Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
@@ -46,7 +47,7 @@ public sealed class CreateWorkoutExerciseValidator
         RuleFor(x => x.TargetReps)
             .GreaterThan(0);
 
-        RuleFor(x => x.RestPerSetInSeconds)
+        RuleFor(x => x.RestInSeconds)
             .GreaterThanOrEqualTo(0);
     }
 }

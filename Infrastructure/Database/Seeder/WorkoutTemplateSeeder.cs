@@ -1,3 +1,4 @@
+using Domain.Entities.Workout.Session;
 using Domain.Entities.Workout.Template;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,7 +51,8 @@ public static class WorkoutTemplateSeeder
                 setCount: 3,
                 targetReps: 8,
                 restPerSetInSeconds: 120,
-                orderIdx: 0));
+                orderIdx: 0,
+                WeightUnit.Pounds));
 
         template.AddExercise(
             WorkoutTemplateExercise.Create(
@@ -59,7 +61,8 @@ public static class WorkoutTemplateSeeder
                 setCount: 3,
                 targetReps: 10,
                 restPerSetInSeconds: 90,
-                orderIdx: 1));
+                orderIdx: 1,
+                WeightUnit.Pounds));
 
         template.AddExercise(
             WorkoutTemplateExercise.Create(
@@ -68,7 +71,8 @@ public static class WorkoutTemplateSeeder
                 setCount: 3,
                 targetReps: 10,
                 restPerSetInSeconds: 90,
-                orderIdx: 2));
+                orderIdx: 2,
+                WeightUnit.Pounds));
 
         template.AddExercise(
             WorkoutTemplateExercise.Create(
@@ -77,7 +81,8 @@ public static class WorkoutTemplateSeeder
                 setCount: 3,
                 targetReps: 12,
                 restPerSetInSeconds: 60,
-                orderIdx: 3));
+                orderIdx: 3,
+                WeightUnit.Pounds));
 
         template.AddExercise(
             WorkoutTemplateExercise.Create(
@@ -86,7 +91,8 @@ public static class WorkoutTemplateSeeder
                 setCount: 3,
                 targetReps: 12,
                 restPerSetInSeconds: 60,
-                orderIdx: 4));
+                orderIdx: 4,
+                WeightUnit.Pounds));
 
         dbContext.WorkoutTemplates.Add(template);
 
