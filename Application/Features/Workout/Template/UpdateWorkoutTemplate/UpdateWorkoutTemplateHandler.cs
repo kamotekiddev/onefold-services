@@ -2,6 +2,7 @@ using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
 using Application.Common.Exceptions;
 using Domain.Entities.Workout.Template;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Features.Workout.Template.UpdateWorkoutTemplate;
@@ -11,10 +12,13 @@ public sealed class UpdateWorkoutTemplateHandler(
     IExerciseRepository exerciseRepository,
     ICurrentUser currentUser,
     IUnitOfWork unitOfWork,
+    IValidator<UpdateWorkoutTemplateRequest> validator,
     ILogger<UpdateWorkoutTemplateHandler> logger)
 {
     public async Task<UpdateWorkoutTemplateResponse> ExecuteAsync(Guid templateId, UpdateWorkoutTemplateRequest request)
     {
+        await validator.ValidateAndThrowAsync(request);
+
         var userId = currentUser.UserId;
 
         var workoutTemplate = await workoutTemplateRepository.GetByIdAsync(templateId);

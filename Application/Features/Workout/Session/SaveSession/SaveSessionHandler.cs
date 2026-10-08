@@ -2,6 +2,7 @@ using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
 using Application.Common.Exceptions;
 using Domain.Entities.Workout.Session;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Features.Workout.Session.SaveSession;
@@ -11,11 +12,13 @@ public class SaveSessionHandler(
     IWorkoutTemplateRepository workoutTemplateRepository,
     IWorkoutSessionRepository workoutSessionRepository,
     IUnitOfWork unitOfWork,
+    IValidator<SaveSessionRequest> validator,
     ILogger<SaveSessionHandler> logger)
 {
     public async Task<SaveSessionResponse> ExecuteAsync(SaveSessionRequest request)
     {
         var userId = currentUser.UserId;
+        await validator.ValidateAndThrowAsync(request);
 
         var template = await workoutTemplateRepository.GetWithExercisesById(request.WorkoutTemplateId);
 
