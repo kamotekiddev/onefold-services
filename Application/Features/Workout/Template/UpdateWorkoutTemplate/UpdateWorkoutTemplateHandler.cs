@@ -59,7 +59,9 @@ public sealed class UpdateWorkoutTemplateHandler(
                     requestExercise.TargetSet,
                     requestExercise.TargetReps,
                     requestExercise.RestInSeconds,
-                    requestExercise.SortIndex);
+                    requestExercise.SortIndex,
+                    requestExercise.WeightUnit,
+                    requestExercise.WeightIncrement);
 
                 workoutTemplate.AddExercise(newWorkoutExercise);
             }
@@ -70,7 +72,9 @@ public sealed class UpdateWorkoutTemplateHandler(
                     requestExercise.TargetSet,
                     requestExercise.TargetReps,
                     requestExercise.RestInSeconds,
-                    requestExercise.SortIndex);
+                    requestExercise.SortIndex,
+                    requestExercise.WeightUnit,
+                    requestExercise.WeightIncrement);
             }
         }
 

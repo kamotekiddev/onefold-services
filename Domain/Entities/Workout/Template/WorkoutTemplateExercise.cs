@@ -15,6 +15,8 @@ public class WorkoutTemplateExercise : Entity
 
     public WeightUnit? WeightUnit { get; private set; }
 
+    public decimal? WeightIncrement { get; private set; }
+
     public int RestInSeconds { get; private set; }
 
     public int SortIndex { get; private set; }
@@ -33,8 +35,9 @@ public class WorkoutTemplateExercise : Entity
         int setCount,
         int targetReps,
         int restPerSetInSeconds,
-        int orderIdx,
-        WeightUnit? weightUnit = null)
+        int sortIndex,
+        WeightUnit? weightUnit = null,
+        decimal? weightIncrement = null)
     {
         if (exerciseId == Guid.Empty)
             throw new DomainException("Invalid exerciseId value.");
@@ -50,15 +53,16 @@ public class WorkoutTemplateExercise : Entity
 
         if (setCount <= 0) throw new DomainException("Invalid set value.");
 
-        return new WorkoutTemplateExercise()
+        return new WorkoutTemplateExercise
         {
             WorkoutTemplateId = workoutTemplateId,
             ExerciseId = exerciseId,
             TargetSet = setCount,
             TargetReps = targetReps,
             RestInSeconds = restPerSetInSeconds,
-            SortIndex = orderIdx,
-            WeightUnit = weightUnit
+            SortIndex = sortIndex,
+            WeightUnit = weightUnit,
+            WeightIncrement = weightIncrement
         };
     }
 
@@ -66,13 +70,15 @@ public class WorkoutTemplateExercise : Entity
         int setCount,
         int targetReps,
         int restPerSetInSeconds,
-        int orderIdx,
-        WeightUnit? weightUnit = null)
+        int sortIndex,
+        WeightUnit? weightUnit = null,
+        decimal? weightIncrement = null)
     {
         TargetSet = setCount;
         TargetReps = targetReps;
         RestInSeconds = restPerSetInSeconds;
-        SortIndex = orderIdx;
+        SortIndex = sortIndex;
         WeightUnit = weightUnit;
+        WeightIncrement = weightIncrement;
     }
 }
