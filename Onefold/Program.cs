@@ -3,12 +3,16 @@ using Application;
 using Infrastructure;
 using Infrastructure.Database;
 using Infrastructure.Database.Seeder;
+using Onefold.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers()
+builder.Services.AddControllers(options =>
+    {
+        options.Filters.Add<ExceptionFilter>();
+    })
     .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
 builder.Services.AddOpenApi();
