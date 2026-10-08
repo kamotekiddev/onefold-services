@@ -52,7 +52,8 @@ public static class WorkoutTemplateSeeder
                 targetReps: 8,
                 restPerSetInSeconds: 120,
                 sortIndex: 0,
-                WeightUnit.Pounds));
+                WeightUnit.Pounds,
+                10));
 
         template.AddExercise(
             WorkoutTemplateExercise.Create(
@@ -62,7 +63,8 @@ public static class WorkoutTemplateSeeder
                 targetReps: 10,
                 restPerSetInSeconds: 90,
                 sortIndex: 1,
-                WeightUnit.Pounds));
+                WeightUnit.Pounds,
+                10));
 
         template.AddExercise(
             WorkoutTemplateExercise.Create(
@@ -72,7 +74,8 @@ public static class WorkoutTemplateSeeder
                 targetReps: 10,
                 restPerSetInSeconds: 90,
                 sortIndex: 2,
-                WeightUnit.Pounds));
+                WeightUnit.Pounds,
+                10));
 
         template.AddExercise(
             WorkoutTemplateExercise.Create(
@@ -82,7 +85,8 @@ public static class WorkoutTemplateSeeder
                 targetReps: 12,
                 restPerSetInSeconds: 60,
                 sortIndex: 3,
-                WeightUnit.Pounds));
+                WeightUnit.Pounds,
+                10));
 
         template.AddExercise(
             WorkoutTemplateExercise.Create(
@@ -92,7 +96,8 @@ public static class WorkoutTemplateSeeder
                 targetReps: 12,
                 restPerSetInSeconds: 60,
                 sortIndex: 4,
-                WeightUnit.Pounds));
+                WeightUnit.Pounds,
+                10));
 
         dbContext.WorkoutTemplates.Add(template);
 
