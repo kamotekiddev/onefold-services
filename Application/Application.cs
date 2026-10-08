@@ -2,14 +2,15 @@
 using Application.Features.Authentication.EmailSignUp;
 using Application.Features.Authentication.RefreshAccessToken;
 using Application.Features.Authentication.SignInWithEmail;
-using Application.Features.Workout.ExerciseModule.CreateExercise;
+using Application.Features.Workout.Exercise.CreateExercise;
 using Application.Features.Workout.ExerciseModule.GetExercise;
 using Application.Features.Workout.Session.GetSessionById;
 using Application.Features.Workout.Session.GetSessionHistory;
 using Application.Features.Workout.Session.SaveSession;
+using Application.Features.Workout.Template.CreateWorkoutTemplate;
 using Application.Features.Workout.Template.GetWorkoutTemplateById;
+using Application.Features.Workout.Template.UpdateWorkoutTemplate;
 using Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
-using Application.Features.Workout.WorkoutTemplateModule.UpdateWorkoutTemplate;
 using Domain.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;

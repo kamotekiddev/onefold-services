@@ -1,3 +1,3 @@
-namespace Application.Features.Workout.ExerciseModule.CreateExercise;
+namespace Application.Features.Workout.Exercise.CreateExercise;
 
 public record CreateExerciseResponse(Guid ExerciseId);

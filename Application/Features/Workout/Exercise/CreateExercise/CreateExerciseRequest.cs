@@ -1,3 +1,5 @@
-namespace Application.Features.Workout.ExerciseModule.CreateExercise;
+using Domain.Entities.Workout;
 
-public record CreateExerciseRequest(string Name);
+namespace Application.Features.Workout.Exercise.CreateExercise;
+
+public record CreateExerciseRequest(string Name, ExerciseType Type, string? Description);
