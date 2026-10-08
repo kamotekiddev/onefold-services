@@ -1,17 +1,26 @@
 using Domain.Entities.Exceptions;
+using Domain.Entities.Workout.Session;
 
 namespace Domain.Entities.Workout.Template;
 
 public class WorkoutTemplateExercise : Entity
 {
     public required Guid ExerciseId { get; init; }
+
     public required Guid WorkoutTemplateId { get; init; }
+
     public int TargetReps { get; private set; }
+
     public int TargetSet { get; private set; }
+
+    public WeightUnit? WeightUnit { get; private set; }
+
     public int RestInSeconds { get; private set; }
+
     public int SortIndex { get; private set; }
 
     public Exercise Exercise { get; init; }
+
     public WorkoutTemplate WorkoutTemplate { get; init; }
 
     private WorkoutTemplateExercise()
@@ -24,7 +33,8 @@ public class WorkoutTemplateExercise : Entity
         int setCount,
         int targetReps,
         int restPerSetInSeconds,
-        int orderIdx)
+        int orderIdx,
+        WeightUnit? weightUnit = null)
     {
         if (exerciseId == Guid.Empty)
             throw new DomainException("Invalid exerciseId value.");
@@ -47,15 +57,22 @@ public class WorkoutTemplateExercise : Entity
             TargetSet = setCount,
             TargetReps = targetReps,
             RestInSeconds = restPerSetInSeconds,
-            SortIndex = orderIdx
+            SortIndex = orderIdx,
+            WeightUnit = weightUnit
         };
     }
 
-    public void Update(int setCount, int targetReps, int restPerSetInSeconds, int orderIdx)
+    public void Update(
+        int setCount,
+        int targetReps,
+        int restPerSetInSeconds,
+        int orderIdx,
+        WeightUnit? weightUnit = null)
     {
         TargetSet = setCount;
         TargetReps = targetReps;
         RestInSeconds = restPerSetInSeconds;
         SortIndex = orderIdx;
+        WeightUnit = weightUnit;
     }
 }

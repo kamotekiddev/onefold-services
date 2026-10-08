@@ -56,10 +56,10 @@ public sealed class UpdateWorkoutTemplateHandler(
                 var newWorkoutExercise = WorkoutTemplateExercise.Create(
                     workoutTemplate.Id,
                     requestExercise.ExerciseId,
-                    requestExercise.SetCount,
+                    requestExercise.TargetSet,
                     requestExercise.TargetReps,
-                    requestExercise.RestPerSetInSeconds,
-                    requestExercise.OrderIdx);
+                    requestExercise.RestInSeconds,
+                    requestExercise.SortIndex);
 
                 workoutTemplate.AddExercise(newWorkoutExercise);
             }
@@ -67,10 +67,10 @@ public sealed class UpdateWorkoutTemplateHandler(
             else
             {
                 workoutExercise.Update(
-                    requestExercise.SetCount,
+                    requestExercise.TargetSet,
                     requestExercise.TargetReps,
-                    requestExercise.RestPerSetInSeconds,
-                    requestExercise.OrderIdx);
+                    requestExercise.RestInSeconds,
+                    requestExercise.SortIndex);
             }
         }
 

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260923090630_AddSetCountOnWorkoutTemplateExercise")]
-    partial class AddSetCountOnWorkoutTemplateExercise
+    [Migration("20261008080646_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,6 +166,9 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -179,7 +182,116 @@ namespace Infrastructure.Migrations
                     b.ToTable("Exercises");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Workout.WorkoutTemplate", b =>
+            modelBuilder.Entity("Domain.Entities.Workout.Session.WorkoutSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("StartedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("WorkoutTemplateId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkoutTemplateId");
+
+                    b.HasIndex("UserId", "WorkoutTemplateId");
+
+                    b.ToTable("WorkoutSessions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Workout.Session.WorkoutSessionExercise", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ExerciseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("RestInSeconds")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("SessionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("SortIndex")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TargetReps")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TargetSet")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.HasIndex("SessionId", "ExerciseId")
+                        .IsUnique();
+
+                    b.ToTable("WorkoutSessionExercises");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Workout.Session.WorkoutSet", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Reps")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SetNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Unit")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal?>("Weight")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.Property<Guid>("WorkoutSessionExerciseId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkoutSessionExerciseId", "SetNumber")
+                        .IsUnique();
+
+                    b.ToTable("WorkoutSets");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Workout.Template.WorkoutTemplate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -214,7 +326,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("WorkoutTemplates");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Workout.WorkoutTemplateExercise", b =>
+            modelBuilder.Entity("Domain.Entities.Workout.Template.WorkoutTemplateExercise", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -226,16 +338,16 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("ExerciseId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("OrderIndex")
+                    b.Property<int>("RestInSeconds")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RestPerSetInSeconds")
+                    b.Property<int>("SortIndex")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SetCount")
+                    b.Property<int>("TargetReps")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TargetRepsPerSet")
+                    b.Property<int>("TargetSet")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
@@ -243,6 +355,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<int?>("WeightUnit")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("WorkoutTemplateId")
                         .HasColumnType("uuid");
@@ -301,7 +416,56 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Workout.WorkoutTemplate", b =>
+            modelBuilder.Entity("Domain.Entities.Workout.Session.WorkoutSession", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("WorkoutSessions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Workout.Template.WorkoutTemplate", "WorkoutTemplate")
+                        .WithMany("WorkoutSessions")
+                        .HasForeignKey("WorkoutTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("WorkoutTemplate");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Workout.Session.WorkoutSessionExercise", b =>
+                {
+                    b.HasOne("Domain.Entities.Workout.Exercise", "Exercise")
+                        .WithMany()
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Workout.Session.WorkoutSession", "Session")
+                        .WithMany("Exercises")
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exercise");
+
+                    b.Navigation("Session");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Workout.Session.WorkoutSet", b =>
+                {
+                    b.HasOne("Domain.Entities.Workout.Session.WorkoutSessionExercise", "WorkoutSessionExercise")
+                        .WithMany("Sets")
+                        .HasForeignKey("WorkoutSessionExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkoutSessionExercise");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Workout.Template.WorkoutTemplate", b =>
                 {
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("WorkoutTemplates")
@@ -312,7 +476,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Workout.WorkoutTemplateExercise", b =>
+            modelBuilder.Entity("Domain.Entities.Workout.Template.WorkoutTemplateExercise", b =>
                 {
                     b.HasOne("Domain.Entities.Workout.Exercise", "Exercise")
                         .WithMany("WorkoutExercises")
@@ -324,7 +488,7 @@ namespace Infrastructure.Migrations
                         .WithMany("WorkoutExercises")
                         .HasForeignKey("UserId");
 
-                    b.HasOne("Domain.Entities.Workout.WorkoutTemplate", "WorkoutTemplate")
+                    b.HasOne("Domain.Entities.Workout.Template.WorkoutTemplate", "WorkoutTemplate")
                         .WithMany("WorkoutExercises")
                         .HasForeignKey("WorkoutTemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -347,6 +511,8 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("WorkoutExercises");
 
+                    b.Navigation("WorkoutSessions");
+
                     b.Navigation("WorkoutTemplates");
                 });
 
@@ -355,9 +521,21 @@ namespace Infrastructure.Migrations
                     b.Navigation("WorkoutExercises");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Workout.WorkoutTemplate", b =>
+            modelBuilder.Entity("Domain.Entities.Workout.Session.WorkoutSession", b =>
+                {
+                    b.Navigation("Exercises");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Workout.Session.WorkoutSessionExercise", b =>
+                {
+                    b.Navigation("Sets");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Workout.Template.WorkoutTemplate", b =>
                 {
                     b.Navigation("WorkoutExercises");
+
+                    b.Navigation("WorkoutSessions");
                 });
 #pragma warning restore 612, 618
         }

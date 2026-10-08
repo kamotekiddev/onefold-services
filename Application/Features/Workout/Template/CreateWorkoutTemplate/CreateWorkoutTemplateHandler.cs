@@ -1,7 +1,6 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
 using Application.Common.Exceptions;
-using Application.Features.Workout.WorkoutTemplateModule.CreateWorkoutTemplate;
 using Domain.Entities.Workout.Template;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
@@ -57,10 +56,10 @@ public sealed class CreateWorkoutTemplateHandler(
             var workoutExercise = WorkoutTemplateExercise.Create(
                 workoutTemplate.Id,
                 exercise.ExerciseId,
-                exercise.SetCount,
+                exercise.TargetSet,
                 exercise.TargetReps,
-                exercise.RestPerSetInSeconds,
-                exercise.OrderIdx);
+                exercise.RestInSeconds,
+                exercise.SortIndex);
 
             workoutTemplate.AddExercise(workoutExercise);
         }
