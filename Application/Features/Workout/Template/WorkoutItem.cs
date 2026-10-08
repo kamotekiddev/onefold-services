@@ -8,4 +8,5 @@ public record WorkoutItem(
     int TargetReps,
     int RestInSeconds,
     int SortIndex,
-    WeightUnit? WeightUnit = null);
+    WeightUnit? WeightUnit = null,
+    decimal? WeightIncrement = null);

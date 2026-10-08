@@ -51,15 +51,17 @@ public sealed class CreateWorkoutTemplateHandler(
             request.RestInMinutes,
             description);
 
-        foreach (var exercise in request.Exercises)
+        foreach (var requestExercise in request.Exercises)
         {
             var workoutExercise = WorkoutTemplateExercise.Create(
                 workoutTemplate.Id,
-                exercise.ExerciseId,
-                exercise.TargetSet,
-                exercise.TargetReps,
-                exercise.RestInSeconds,
-                exercise.SortIndex);
+                requestExercise.ExerciseId,
+                requestExercise.TargetSet,
+                requestExercise.TargetReps,
+                requestExercise.RestInSeconds,
+                requestExercise.SortIndex,
+                requestExercise.WeightUnit,
+                requestExercise.WeightIncrement);
 
             workoutTemplate.AddExercise(workoutExercise);
         }
