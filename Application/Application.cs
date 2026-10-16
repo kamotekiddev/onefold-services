@@ -9,7 +9,9 @@ using Application.Features.Workout.Session.GetSessionHistory;
 using Application.Features.Workout.Session.SaveSession;
 using Application.Features.Workout.Template.CreateWorkoutTemplate;
 using Application.Features.Workout.Template.GetWorkoutTemplateById;
+using Application.Features.Workout.Template.GetWorkoutTemplates;
 using Application.Features.Workout.Template.UpdateWorkoutTemplate;
+using Application.Features.Workout.Template.UpdateWorkoutTemplateSchedule;
 using Domain.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -32,6 +34,8 @@ public static class Application
         services.AddScoped<GetSessionByIdHandler>();
         services.AddScoped<GetSessionsHandler>();
         services.AddScoped<GetWorkoutTemplateByIdHandler>();
+        services.AddScoped<GetWorkoutTemplatesHandler>();
+        services.AddScoped<UpdateWorkoutTemplateScheduleHandler>();
 
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 

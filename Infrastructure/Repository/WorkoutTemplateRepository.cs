@@ -37,4 +37,14 @@ public class WorkoutTemplateRepository(AppDbContext db) : IWorkoutTemplateReposi
             .ThenInclude(x => x.Exercise)
             .FirstOrDefaultAsync(x => x.Id == templateId);
     }
+
+    public async Task<IReadOnlyCollection<WorkoutTemplate>> GetAllByUserIdAsync(Guid userId, DayOfWeek? day = null)
+    {
+        var query = db.WorkoutTemplates.AsNoTracking().Where(template => template.UserId == userId);
+
+        if (day.HasValue)
+            query = query.Where(template => EF.Property<DayOfWeek[]>(template, "_scheduledDays").Contains(day.Value));
+
+        return await query.OrderBy(template => template.Name).ThenBy(template => template.Id).ToListAsync();
+    }
 }

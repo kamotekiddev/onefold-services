@@ -17,6 +17,9 @@ public sealed class CreateWorkoutTemplateRequestValidator
         RuleFor(x => x.RestInMinutes)
             .GreaterThan(0);
 
+        RuleFor(x => x.ScheduledDays!)
+            .SetValidator(new ScheduledDaysValidator());
+
         RuleFor(x => x.Exercises)
             .NotEmpty()
             .Must(HaveUniqueExercises)

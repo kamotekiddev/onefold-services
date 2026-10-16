@@ -313,6 +313,13 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
+                    b.PrimitiveCollection<int[]>("_scheduledDays")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer[]")
+                        .HasColumnName("ScheduledDays")
+                        .HasDefaultValueSql("'{}'::integer[]");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
@@ -352,6 +359,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<decimal?>("WeightIncrement")
+                        .HasColumnType("numeric");
 
                     b.Property<int?>("WeightUnit")
                         .HasColumnType("integer");

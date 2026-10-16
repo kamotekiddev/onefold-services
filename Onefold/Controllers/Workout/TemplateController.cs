@@ -1,6 +1,8 @@
 using Application.Features.Workout.Template.CreateWorkoutTemplate;
 using Application.Features.Workout.Template.GetWorkoutTemplateById;
+using Application.Features.Workout.Template.GetWorkoutTemplates;
 using Application.Features.Workout.Template.UpdateWorkoutTemplate;
+using Application.Features.Workout.Template.UpdateWorkoutTemplateSchedule;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +13,9 @@ namespace Onefold.Controllers.Workout
     public class TemplateController(
         CreateWorkoutTemplateHandler createWorkoutTemplateHandler,
         UpdateWorkoutTemplateHandler updateWorkoutTemplateHandler,
-        GetWorkoutTemplateByIdHandler getWorkoutTemplateByIdHandler) : ControllerBase
+        GetWorkoutTemplateByIdHandler getWorkoutTemplateByIdHandler,
+        GetWorkoutTemplatesHandler getWorkoutTemplatesHandler,
+        UpdateWorkoutTemplateScheduleHandler updateWorkoutTemplateScheduleHandler) : ControllerBase
     {
         [HttpPost]
         [Authorize]
@@ -26,6 +30,23 @@ namespace Onefold.Controllers.Workout
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var result = await getWorkoutTemplateByIdHandler.HandleAsync(id);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAll([FromQuery] GetWorkoutTemplatesRequest request)
+        {
+            var result = await getWorkoutTemplatesHandler.ExecuteAsync(request);
+            return Ok(result);
+        }
+
+        [HttpPut("{id:guid}/schedule")]
+        [Authorize]
+        public async Task<IActionResult> UpdateSchedule([FromRoute] Guid id,
+            [FromBody] UpdateWorkoutTemplateScheduleRequest request)
+        {
+            var result = await updateWorkoutTemplateScheduleHandler.ExecuteAsync(id, request);
             return Ok(result);
         }
 

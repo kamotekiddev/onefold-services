@@ -10,6 +10,13 @@ public class WorkoutTemplateConfiguration : IEntityTypeConfiguration<WorkoutTemp
     {
         builder.HasKey(wt => wt.Id);
 
+        builder.Ignore(wt => wt.ScheduledDays);
+        builder.Property<DayOfWeek[]>("_scheduledDays")
+            .HasColumnName("ScheduledDays")
+            .HasColumnType("integer[]")
+            .HasDefaultValueSql("'{}'::integer[]")
+            .IsRequired();
+
         builder.HasOne(wt => wt.User)
             .WithMany(u => u.WorkoutTemplates)
             .HasForeignKey(wt => wt.UserId)
