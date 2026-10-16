@@ -3,6 +3,7 @@ using Application;
 using Infrastructure;
 using Infrastructure.Database;
 using Infrastructure.Database.Seeder;
+using Microsoft.AspNetCore.Mvc;
 using Onefold.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,12 @@ builder.Services.AddControllers(options =>
         options.Filters.Add<ExceptionFilter>();
     })
     .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context => ErrorResponses.Validation(
+        context.HttpContext, context.ModelState);
+});
 
 builder.Services.AddOpenApi();
 

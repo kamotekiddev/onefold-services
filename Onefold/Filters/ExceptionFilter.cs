@@ -1,8 +1,9 @@
-using System.ComponentModel.DataAnnotations;
 using Application.Common.Exceptions;
 using Domain.Entities.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using DataAnnotationsValidationException = System.ComponentModel.DataAnnotations.ValidationException;
+using FluentValidationException = FluentValidation.ValidationException;
 
 namespace Onefold.Filters;
 
@@ -15,63 +16,66 @@ public sealed class ExceptionFilter(
 
         context.Result = exception switch
         {
-            ValidationException ex => CreateResponse(
-                StatusCodes.Status400BadRequest,
-                ex.Message),
+            FluentValidationException ex => ErrorResponses.Validation(
+                context.HttpContext,
+                ex.Errors
+                    .GroupBy(error => error.PropertyName ?? string.Empty)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.Select(error => error.ErrorMessage).ToArray())),
 
-            NotFoundException ex => CreateResponse(
-                StatusCodes.Status404NotFound,
-                ex.Message),
+            DataAnnotationsValidationException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status400BadRequest, ex.Message),
 
-            ConflictException ex => CreateResponse(
-                StatusCodes.Status409Conflict,
-                ex.Message),
+            UnAuthorizedException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status401Unauthorized, ex.Message),
 
-            DomainException ex => CreateResponse(
-                StatusCodes.Status400BadRequest,
-                ex.Message),
+            ForbiddenException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status403Forbidden, ex.Message),
 
-            _ => HandleUnexpectedException(exception)
+            NotFoundException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status404NotFound, ex.Message),
+
+            ConflictException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status409Conflict, ex.Message),
+
+            CredentialAlreadyExistException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status409Conflict, ex.Message),
+
+            WorkoutExerciseAlreadyExistsException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status409Conflict, ex.Message),
+
+            WorkoutSessionExerciseAlreadyExistsException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status409Conflict, ex.Message),
+
+            WorkoutSetAlreadyExistsException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status409Conflict, ex.Message),
+
+            WorkoutExerciseDoesNotExistException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status404NotFound, ex.Message),
+
+            WorkoutSessionExerciseDoesNotExistsException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status404NotFound, ex.Message),
+
+            DomainException ex => ErrorResponses.Problem(
+                context.HttpContext, StatusCodes.Status400BadRequest, ex.Message),
+
+            _ => HandleUnexpectedException(context.HttpContext, exception)
         };
 
         context.ExceptionHandled = true;
     }
 
-    private static ObjectResult CreateResponse(
-        int statusCode,
-        string message)
-    {
-        return new ObjectResult(new ProblemDetails
-        {
-            Status = statusCode,
-            Title = GetTitle(statusCode),
-            Detail = message
-        })
-        {
-            StatusCode = statusCode
-        };
-    }
-
-    private ObjectResult HandleUnexpectedException(Exception exception)
+    private ObjectResult HandleUnexpectedException(
+        HttpContext httpContext, Exception exception)
     {
         logger.LogError(
             exception,
             "An unexpected error occurred.");
 
-        return CreateResponse(
+        return ErrorResponses.Problem(
+            httpContext,
             StatusCodes.Status500InternalServerError,
             "An unexpected error occurred.");
-    }
-
-    private static string GetTitle(int statusCode)
-    {
-        return statusCode switch
-        {
-            StatusCodes.Status400BadRequest => "Bad Request",
-            StatusCodes.Status404NotFound => "Not Found",
-            StatusCodes.Status409Conflict => "Conflict",
-            StatusCodes.Status500InternalServerError => "Internal Server Error",
-            _ => "Error"
-        };
     }
 }

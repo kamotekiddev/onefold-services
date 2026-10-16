@@ -1,5 +1,5 @@
 namespace Domain.Entities.Exceptions;
 
-public class WorkoutExerciseAlreadyExistsException(string message) : Exception(message)
+public class WorkoutExerciseAlreadyExistsException(string message) : DomainException(message)
 {
 }

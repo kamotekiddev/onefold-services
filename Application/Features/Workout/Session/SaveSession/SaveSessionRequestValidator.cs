@@ -20,12 +20,16 @@ public sealed class SaveSessionRequestValidator
             .WithMessage("An exercise can only appear once in a workout session.");
 
         RuleForEach(x => x.Exercises)
+            .NotNull()
             .SetValidator(new SaveSessionExerciseRequestValidator());
     }
 
     private static bool HaveUniqueExercises(
-        IReadOnlyCollection<SaveSessionExerciseRequest> exercises)
+        IReadOnlyCollection<SaveSessionExerciseRequest>? exercises)
     {
+        if (exercises is null || exercises.Any(exercise => exercise is null))
+            return true;
+
         return exercises
             .Select(x => x.ExerciseId)
             .Distinct()
@@ -50,12 +54,16 @@ public sealed class SaveSessionExerciseRequestValidator
             .WithMessage("Set numbers must be unique.");
 
         RuleForEach(x => x.Sets)
+            .NotNull()
             .SetValidator(new SaveSessionWorkoutSetRequestValidator());
     }
 
     private static bool HaveUniqueSetNumbers(
-        IReadOnlyCollection<SaveSessionWorkoutSetRequest> sets)
+        IReadOnlyCollection<SaveSessionWorkoutSetRequest>? sets)
     {
+        if (sets is null || sets.Any(set => set is null))
+            return true;
+
         return sets
             .Select(x => x.SetNumber)
             .Distinct()

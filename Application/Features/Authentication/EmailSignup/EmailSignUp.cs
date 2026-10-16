@@ -1,6 +1,8 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
+using Application.Common.Exceptions;
 using Domain.Entities;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -12,14 +14,17 @@ public sealed class EmailSignUp(
     IPasswordHasher<User> passwordHasher,
     IRefreshTokenRepository refreshTokenRepository,
     IUnitOfWork unitOfWork,
+    IValidator<EmailSignUpRequest> validator,
     ILogger<EmailSignUp> logger)
 {
     public async Task<EmailSignUpResponse> ExecuteAsync(EmailSignUpRequest request)
     {
+        await validator.ValidateAndThrowAsync(request);
+
         var existingUser = await userRepository.GetByEmailAsync(request.Email);
 
         if (existingUser is not null)
-            throw new InvalidOperationException("Email is already taken.");
+            throw new ConflictException("Email is already taken.");
 
         var user = User.Create(request.Email);
 

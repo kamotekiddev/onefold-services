@@ -23,12 +23,16 @@ public sealed class CreateWorkoutTemplateRequestValidator
             .WithMessage("An exercise can only be added once to a workout template.");
 
         RuleForEach(x => x.Exercises)
+            .NotNull()
             .SetValidator(new WorkoutItemValidator());
     }
 
     private static bool HaveUniqueExercises(
-        IReadOnlyCollection<WorkoutItem> exercises)
+        IReadOnlyCollection<WorkoutItem>? exercises)
     {
+        if (exercises is null || exercises.Any(exercise => exercise is null))
+            return true;
+
         return exercises
             .Select(x => x.ExerciseId)
             .Distinct()

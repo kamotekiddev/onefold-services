@@ -1,6 +1,8 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Persistence;
+using Application.Common.Exceptions;
 using Domain.Entities;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
@@ -12,14 +14,17 @@ public class SignInWithEmailHandler(
     IPasswordHasher<User> passwordHasher,
     ITokenService tokenService,
     IUnitOfWork unitOfWork,
+    IValidator<SignInWithEmailRequest> validator,
     ILogger<SignInWithEmailHandler> logger)
 {
     public async Task<SignInWithEmailResponse> ExecuteAsync(SignInWithEmailRequest request)
     {
+        await validator.ValidateAndThrowAsync(request);
+
         var user = await userRepository.GetByEmailWithCredentialsAsync(request.Email);
 
         if (user is null)
-            throw new InvalidOperationException("Invalid email or password.");
+            throw new UnAuthorizedException("Invalid email or password.");
 
         var emailCredential = user.Credentials.SingleOrDefault(c => c.Provider == CredentialProvider.Email);
 
@@ -29,7 +34,7 @@ public class SignInWithEmailHandler(
                 "Email sign in failed. Email credential not found for UserId:{UserId}",
                 user.Id);
 
-            throw new InvalidOperationException("Invalid email or password.");
+            throw new UnAuthorizedException("Invalid email or password.");
         }
 
         var passwordVerificationResult =
@@ -41,7 +46,7 @@ public class SignInWithEmailHandler(
                 "Email sign in failed. the user provided incorrect password for UserId:{UserId}",
                 user.Id);
 
-            throw new InvalidOperationException("Invalid email or password.");
+            throw new UnAuthorizedException("Invalid email or password.");
         }
 
         var accessToken = tokenService.GenerateAccessToken(user);
