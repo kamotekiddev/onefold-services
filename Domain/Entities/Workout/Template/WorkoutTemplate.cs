@@ -11,6 +11,8 @@ public class WorkoutTemplate : Entity
 
     public int RestInMinutes { get; private set; }
 
+    public IReadOnlyCollection<DayOfWeek> ScheduledDays => Array.AsReadOnly(_scheduledDays);
+
     public Guid UserId { get; init; }
 
     public User User { get; init; }
@@ -21,23 +23,39 @@ public class WorkoutTemplate : Entity
     public ICollection<WorkoutSession> WorkoutSessions { get; init; } = [];
 
     private readonly List<WorkoutTemplateExercise> _workoutExercises = [];
+    private DayOfWeek[] _scheduledDays = [];
 
     private WorkoutTemplate()
     {
     }
 
-    public static WorkoutTemplate Create(Guid userId, string name, int restInMinutes, string? description = null)
+    public static WorkoutTemplate Create(Guid userId, string name, int restInMinutes, string? description = null,
+        IReadOnlyCollection<DayOfWeek>? scheduledDays = null)
     {
         if (userId == Guid.Empty) throw new DomainException("Invalid userId value.");
         if (restInMinutes <= 0) throw new DomainException("Invalid rest in minutes.");
 
-        return new WorkoutTemplate()
+        var template = new WorkoutTemplate()
         {
             UserId = userId,
             Name = name,
             RestInMinutes = restInMinutes,
             Description = description
         };
+
+        template.ReplaceSchedule(scheduledDays ?? []);
+        return template;
+    }
+
+    public void ReplaceSchedule(IReadOnlyCollection<DayOfWeek> scheduledDays)
+    {
+        if (scheduledDays is null || scheduledDays.Any(day => !Enum.IsDefined(day)))
+            throw new DomainException("Scheduled days must contain valid weekdays.");
+
+        if (scheduledDays.Distinct().Count() != scheduledDays.Count)
+            throw new DomainException("Each weekday can only be scheduled once.");
+
+        _scheduledDays = scheduledDays.OrderBy(day => ((int)day + 6) % 7).ToArray();
     }
 
     public void AddExercise(WorkoutTemplateExercise workoutTemplateExercise)

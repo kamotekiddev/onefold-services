@@ -1,0 +1,3 @@
+namespace Application.Features.Workout.Template.UpdateWorkoutTemplateSchedule;
+
+public sealed record UpdateWorkoutTemplateScheduleRequest(IReadOnlyCollection<DayOfWeek> ScheduledDays);

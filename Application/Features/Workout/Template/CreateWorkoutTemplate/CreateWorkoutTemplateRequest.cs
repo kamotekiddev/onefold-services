@@ -4,4 +4,5 @@ public record CreateWorkoutTemplateRequest(
     string Name,
     string? Description,
     int RestInMinutes,
-    IReadOnlyCollection<WorkoutItem> Exercises);
+    IReadOnlyCollection<WorkoutItem> Exercises,
+    IReadOnlyCollection<DayOfWeek>? ScheduledDays = null);

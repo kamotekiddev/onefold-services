@@ -9,4 +9,5 @@ public interface IWorkoutTemplateRepository
     Task<bool> CheckUserOwnedByNameAsync(Guid userId, string name);
     Task<WorkoutTemplate?> GetByIdAsync(Guid templateId);
     Task<WorkoutTemplate?> GetWithExercisesById(Guid templateId);
+    Task<IReadOnlyCollection<WorkoutTemplate>> GetAllByUserIdAsync(Guid userId, DayOfWeek? day = null);
 }

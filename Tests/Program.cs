@@ -161,4 +161,7 @@ catch (ValidationException exception)
         "second nested set rule returned");
 }
 
+await WorkoutTemplateScheduleChecks.RunAsync(Check);
+await WorkoutTemplateScheduleIntegrationChecks.RunAsync(Check);
+
 Console.WriteLine($"Passed {checks} regression checks.");

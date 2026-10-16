@@ -6,5 +6,6 @@ public sealed record WorkoutTemplateDto(
     string Name,
     string? Description,
     int RestInMinutes,
-    IReadOnlyCollection<WorkoutExerciseDto> WorkoutExercises
+    IReadOnlyCollection<WorkoutExerciseDto> WorkoutExercises,
+    IReadOnlyCollection<DayOfWeek> ScheduledDays
 );

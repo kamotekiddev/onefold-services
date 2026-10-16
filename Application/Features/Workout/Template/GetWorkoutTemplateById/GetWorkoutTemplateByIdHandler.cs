@@ -48,7 +48,8 @@ public class GetWorkoutTemplateByIdHandler(
             userId, workoutTemplate.Name,
             workoutTemplate.Description,
             workoutTemplate.RestInMinutes,
-            workoutExercises
+            workoutExercises,
+            workoutTemplate.ScheduledDays
         );
     }
 }

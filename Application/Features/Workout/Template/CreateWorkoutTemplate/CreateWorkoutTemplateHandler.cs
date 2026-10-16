@@ -49,7 +49,8 @@ public sealed class CreateWorkoutTemplateHandler(
             userId,
             templateName,
             request.RestInMinutes,
-            description);
+            description,
+            request.ScheduledDays);
 
         foreach (var requestExercise in request.Exercises)
         {
