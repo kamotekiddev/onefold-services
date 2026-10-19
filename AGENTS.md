@@ -59,6 +59,12 @@ The HTTP launch profile uses `http://localhost:5158`. The HTTPS profile also use
 
 For schema changes, update entity mappings in `Infrastructure/Database/Configurations/`, generate a migration into `Infrastructure/Migrations/`, and review the migration and model snapshot together. Use the Infrastructure project and Onefold startup project for EF tooling; do not rewrite applied migrations to conceal schema changes.
 
+## Pull requests
+
+- Prefix every pull request title with the most applicable bracketed change type: `[Feature]`, `[Hotfix]`, `[Fix]`, `[Refactor]`, `[Chore]`, `[Docs]`, or `[Test]`.
+- When an issue or ticket identifier is known, include it after the change type, for example `[Feature] [ONE-123] Add workout schedules` or `[Fix] [#42] Reject invalid refresh tokens`. Use the exact identifier supplied by the user or repository; never invent one.
+- Keep the remainder of the title concise and action-oriented. Update the title if the final scope changes enough that the original type or description is no longer accurate.
+
 ## Scope and delivery
 
 - Preserve unrelated working-tree changes and local files. Do not include `.DS_Store`, IDE state, build output, or credentials in commits.
