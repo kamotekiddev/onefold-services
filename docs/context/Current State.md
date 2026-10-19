@@ -8,18 +8,18 @@ updated: 2026-10-19
 ## Snapshot
 
 - **Inspected:** 2026-10-19, Asia/Manila.
-- **Working branch:** `codex/project-context-vault`, created from refreshed `origin/master` for documentation delivery.
-- **Branch base:** `84cf53f` — Merge pull request #38 from codex/workout-template-schedules. Its file tree matches the initially inspected revision `9200349`.
-- **Default branch:** local origin HEAD points to `master`.
-- **Scope:** origin was refreshed during PR preparation. GitHub reports the earlier branch's PR #38 merged. Deployment status was not checked; this documentation branch is separate from that merged work.
+- **Working branch:** `codex/obsidian-vault-settings`, created from refreshed `origin/master`.
+- **Branch base / inspected commit:** `a6beb08` — Merge pull request #39 from kamotekiddev/codex/project-context-vault.
+- **Default branch:** `master`.
+- **Scope:** Commit the shareable Obsidian settings and prepare a PR. The project-context documentation is present in the refreshed default branch. Deployment status was not checked.
 
 Relevant local history: `6f34ebc` introduced detailed API exceptions/validation errors; `074694d` added weekly schedules and their regression coverage; `3292bda` and `9200349` documented branch and PR conventions. Read [[Features and API]] and [[Decisions]] for the resulting behavior.
 
 ## Current work
 
-The user configured this repository as an Obsidian vault and asked for persistent project context. The initial context notes now live under `docs/context/`; [AGENTS.md](../../AGENTS.md) points future sessions here and requests ongoing maintenance. Two stale statements in that file were corrected: regression checks now exist, and the exception filter handles FluentValidation as well as DataAnnotations exceptions.
+The user requested a commit, push, and PR for untracked files. The shareable vault settings are `.obsidian/app.json`, `.obsidian/appearance.json`, and `.obsidian/core-plugins.json`. The first two contain empty objects; the third records the existing core-plugin choices. Their contents are preserved unchanged.
 
-Existing untracked `.obsidian/` settings and `.DS_Store` files were present before this task and must remain separate from documentation changes. No application source or configuration changes are part of this task. The user subsequently requested a separate branch, commit, and PR for these notes.
+Untracked `.obsidian/workspace.json` and `.DS_Store` files remain local in accordance with repository guidance. No application changes are included. This snapshot records preparation; verify publication through Git/GitHub.
 
 ## Known issues and follow-up candidates
 
@@ -34,7 +34,7 @@ These are observations, not an approved implementation backlog.
 
 ## Verification boundary
 
-This task is documentation-only. Source and command references were inspected; note links and diff whitespace are checked as part of delivery. No build, regression suite, database migration, API startup, or deployment was run. Existing checks are documented without claiming that they currently pass.
+The three settings files passed JSON parsing. This task changes vault settings and handoff notes only; no application build, regression suite, database migration, API startup, or deployment was run. Staged whitespace and scope checks are performed before commit.
 
 ## Resume checklist
 
