@@ -1,5 +1,13 @@
 # Repository guidance for AI agents
 
+## Persistent project context (Obsidian vault)
+
+- This repository is also an Obsidian vault. Start with [Project Home](docs/context/Project%20Home.md), then read [Current State](docs/context/Current%20State.md) and the notes relevant to the task.
+- Maintain these notes as part of meaningful project work: update current behavior, record consequential decisions with evidence, and add a dated handoff to [Session Log](docs/context/Session%20Log.md). Documentation maintenance does not authorize deployment, publishing, or unrelated code changes.
+- Keep durable knowledge in the topic notes; keep branch-specific status, checks actually run, blockers, and next steps in Current State and Session Log. Identify the branch and commit inspected. Do not imply that local work is merged or deployed.
+- Treat notes as context, not a replacement for inspecting current code and Git state. Separate explicit user decisions, observed implementation choices, and proposals; never invent historical rationale or mark unrun checks as passing.
+- Use relative source links and Obsidian wikilinks between notes. Keep credentials, tokens, personal data, generated output, and `.obsidian` workspace state out of project notes. Preserve the user's vault settings.
+
 ## Project map
 
 Onefold is a .NET 10 ASP.NET Core API for authentication, exercises, workout templates, and workout sessions. The solution is `Onefold.sln`.
@@ -21,7 +29,7 @@ Onefold is a .NET 10 ASP.NET Core API for authentication, exercises, workout tem
 - Preserve entity factory methods and domain mutation methods; enforce business invariants there rather than bypassing private setters or backing collections.
 - Use `ICurrentUser` for authenticated identity and enforce ownership when accessing user-owned data. Preserve authorization requirements, routes, request/response shapes, and string enum serialization unless the task changes the API contract.
 - Match surrounding C# conventions: four-space indentation, PascalCase types/members, camelCase locals/parameters, nullable annotations, async I/O, and structured logging. Existing namespace styles and handler method names vary; avoid unrelated normalization.
-- Trace error handling through `Onefold/Filters/ExceptionFilter.cs`. It currently imports DataAnnotations `ValidationException`, while feature validators use FluentValidation; do not assume every validation or application exception already maps to the intended HTTP status.
+- Trace error handling through `Onefold/Filters/ExceptionFilter.cs` and `ErrorResponses.cs`. The filter handles both FluentValidation and DataAnnotations validation exceptions; model-binding errors are configured in `Program.cs`. Check mappings for new exception types rather than assuming they receive the intended HTTP status.
 
 ## Build and validation
 
@@ -35,7 +43,7 @@ dotnet build Onefold.sln --no-restore
 
 Known setup issue at initialization: `global.json` specifies SDK version `10.0.0`, which the installed .NET SDK reports as invalid (SDK feature bands begin at `10.0.100`). Check the current file before troubleshooting. Report this separately from errors introduced by a task; keep SDK/dependency changes scoped to the work.
 
-There are currently no test projects in the solution. Do not describe a successful build or an empty `dotnet test` run as passing behavioral tests. For behavior changes, add focused regression coverage where practical and report any manual checks and remaining gaps. For documentation-only edits, check paths, commands, and the diff; a rebuild is unnecessary.
+`Tests/Tests.csproj` is an executable regression suite included in the solution. Run `dotnet run --project Tests/Tests.csproj`, not `dotnet test`; see [Tests/README.md](Tests/README.md) for the SDK workaround and disposable PostgreSQL/HTTP integration checks. Without `ONEFOLD_TEST_CONNECTION_STRING`, integration checks are explicitly skipped. Do not describe a successful build or an empty `dotnet test` run as passing behavioral tests. For behavior changes, add focused regression coverage where practical and report any manual checks and remaining gaps. For documentation-only edits, check paths, commands, and the diff; a rebuild is unnecessary.
 
 The initial build with a corrected SDK selector succeeded but reported nullable initialization warnings, a redundant dependency warning, and NuGet vulnerability warnings. Recheck current output instead of treating these observations as permanent or fixing unrelated warnings automatically.
 
