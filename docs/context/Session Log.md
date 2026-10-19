@@ -26,6 +26,15 @@ Use this for concise dated handoffs. Durable knowledge belongs in [[Architecture
 - **Validation:** Recheck all local note links and staged diff whitespace before committing. No build required for documentation-only changes.
 - **Delivery:** This entry records PR preparation; verify the resulting commit and PR through Git/GitHub rather than treating this note as evidence of successful publication.
 
+## 2026-10-19 — Prepare vault settings pull request
+
+- **Request:** Commit, push, and create a PR for untracked files.
+- **Branch/base:** `codex/obsidian-vault-settings` from refreshed `origin/master` at `a6beb08` (merge of project-context PR #39).
+- **Scope:** Preserve and track the existing app, appearance, and core-plugin settings under `.obsidian/`; update this handoff and [[Current State]].
+- **Preserved local state:** `.obsidian/workspace.json` and all `.DS_Store` files stay untracked, following [repository guidance](../../AGENTS.md).
+- **Validation:** All three settings files passed JSON parsing. Check staged diff whitespace and file scope before commit. No application checks are needed for this settings/documentation change.
+- **Delivery:** Commit, push, and PR creation are authorized. This entry records preparation; publication must be verified through Git/GitHub. No merge or deployment is requested.
+
 ## Handoff format for future entries
 
 Use a date and task title, then record the request, branch/starting revision, meaningful changes, decision IDs (if any), checks actually run and outcomes, remaining work/blockers, and any local state the next session must preserve. Include PR or commit references only when verified. Do not include secrets or full transcripts.
