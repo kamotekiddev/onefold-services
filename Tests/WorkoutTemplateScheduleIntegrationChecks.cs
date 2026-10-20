@@ -31,7 +31,7 @@ internal static class WorkoutTemplateScheduleIntegrationChecks
         var connectionString = Environment.GetEnvironmentVariable("ONEFOLD_TEST_CONNECTION_STRING");
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            Console.WriteLine("Skipped PostgreSQL/HTTP schedule checks: ONEFOLD_TEST_CONNECTION_STRING is not set.");
+            Console.WriteLine("Skipped PostgreSQL/HTTP schedule and exercise search checks: ONEFOLD_TEST_CONNECTION_STRING is not set.");
             return;
         }
 
@@ -203,6 +203,8 @@ internal static class WorkoutTemplateScheduleIntegrationChecks
             var repository = new WorkoutTemplateRepository(verificationDb);
             await repository.GetAllByUserIdAsync(owner.Id, DayOfWeek.Monday);
             check(!verificationDb.ChangeTracker.Entries().Any(), "template listing does not track entities");
+
+            await ExerciseSearchIntegrationChecks.RunAsync(options, client, SignIn, owner.Id, otherOwner.Id, check);
         }
         finally
         {

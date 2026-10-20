@@ -3,6 +3,7 @@ using Application.Features.Authentication.EmailSignUp;
 using Application.Features.Authentication.RefreshAccessToken;
 using Application.Features.Authentication.SignInWithEmail;
 using Application.Features.Workout.Exercise.CreateExercise;
+using Application.Features.Workout.Exercise.SearchExercises;
 using Application.Features.Workout.ExerciseModule.GetExercise;
 using Application.Features.Workout.Session.GetSessionById;
 using Application.Features.Workout.Session.GetSessionHistory;
@@ -28,6 +29,7 @@ public static class Application
         services.AddScoped<RefreshAccessTokenHandler>();
         services.AddScoped<CreateExerciseHandler>();
         services.AddScoped<GetExerciseHandler>();
+        services.AddScoped<SearchExercisesHandler>();
         services.AddScoped<CreateWorkoutTemplateHandler>();
         services.AddScoped<UpdateWorkoutTemplateHandler>();
         services.AddScoped<SaveSessionHandler>();

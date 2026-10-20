@@ -162,6 +162,7 @@ catch (ValidationException exception)
 }
 
 await WorkoutTemplateScheduleChecks.RunAsync(Check);
+await ExerciseSearchChecks.RunAsync(Check);
 await WorkoutTemplateScheduleIntegrationChecks.RunAsync(Check);
 
 Console.WriteLine($"Passed {checks} regression checks.");
