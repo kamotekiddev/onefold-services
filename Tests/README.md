@@ -15,7 +15,7 @@ onefold_repo="$PWD"
 (cd /private/tmp && dotnet run --project "$onefold_repo/Tests/Tests.csproj")
 ```
 
-## PostgreSQL and HTTP schedule checks
+## PostgreSQL and HTTP schedule and exercise search checks
 
 Without `ONEFOLD_TEST_CONNECTION_STRING`, the suite runs its in-process checks and explicitly reports that integration checks were skipped.
 
@@ -43,6 +43,8 @@ onefold_repo="$PWD"
 ```
 
 The migration check inserts a template into the original schema, applies the new migrations, and verifies that the existing template is unscheduled. A separate prerequisite migration supplies the already-modeled `WorkoutExercises.WeightIncrement` column that was missing from the original migration history.
+
+The same disposable database and HTTP host also run exercise search checks: authenticated visibility, active status, case-insensitive substring matching, literal wildcard characters, pagination and counts, validation problem responses, and the existing exercise detail route. In-process checks cover search validation, offset overflow, and handler mapping even when PostgreSQL checks are skipped.
 
 Remove the disposable database after the run, including after a failure:
 

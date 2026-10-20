@@ -1,25 +1,27 @@
 ---
 tags: [onefold, handoff]
-updated: 2026-10-19
+updated: 2026-10-20
 ---
 
 # Current state
 
 ## Snapshot
 
-- **Inspected:** 2026-10-19, Asia/Manila.
-- **Working branch:** `codex/project-context-vault`, created from refreshed `origin/master` for documentation delivery.
-- **Branch base:** `84cf53f` — Merge pull request #38 from codex/workout-template-schedules. Its file tree matches the initially inspected revision `9200349`.
+- **Inspected:** 2026-10-20, Asia/Manila.
+- **Working branch:** `codex/seed-exercises`; existing seed work preserved while implementing exercise search.
+- **Inspected HEAD:** `a6beb08c49fca1e6cf00482c2de399794a52ec19`. Search delivery is being prepared from this revision; earlier seed changes remain local and uncommitted.
 - **Default branch:** local origin HEAD points to `master`.
-- **Scope:** origin was refreshed during PR preparation. GitHub reports the earlier branch's PR #38 merged. Deployment status was not checked; this documentation branch is separate from that merged work.
+- **Scope:** No remote refresh, publication, or deployment occurred during search implementation. The prior documentation session reported schedule PR #38 merged; current deployment status was not checked.
 
 Relevant local history: `6f34ebc` introduced detailed API exceptions/validation errors; `074694d` added weekly schedules and their regression coverage; `3292bda` and `9200349` documented branch and PR conventions. Read [[Features and API]] and [[Decisions]] for the resulting behavior.
 
 ## Current work
 
-The user configured this repository as an Obsidian vault and asked for persistent project context. The initial context notes now live under `docs/context/`; [AGENTS.md](../../AGENTS.md) points future sessions here and requests ongoing maintenance. Two stale statements in that file were corrected: regression checks now exist, and the exception filter handles FluentValidation as well as DataAnnotations exceptions.
+The exercise seed catalog is being expanded on `codex/seed-exercises` from `master`. The development seeder targets a curated 24-exercise global starter catalog while preserving the five exercises used by the seeded Push Day template. Its pre-existing disposable PostgreSQL regression coverage was preserved and passed during search verification.
 
-Existing untracked `.obsidian/` settings and `.DS_Store` files were present before this task and must remain separate from documentation changes. No application source or configuration changes are part of this task. The user subsequently requested a separate branch, commit, and PR for these notes.
+Implemented authenticated exercise name search with case-insensitive literal substring matching, active global/current-user visibility, and pagination with total count. See [[Features and API]] and decision D-005 in [[Decisions]]. Creation still leaves user-owned exercises inactive, so they are excluded from search until activated.
+
+Existing untracked `.obsidian/` settings and `.DS_Store` files were present before this task and must remain separate from implementation changes. The user requested commit, push, and PR delivery for search; the earlier seed work remains outside the staged change. No deployment is requested.
 
 ## Known issues and follow-up candidates
 
@@ -34,7 +36,9 @@ These are observations, not an approved implementation backlog.
 
 ## Verification boundary
 
-This task is documentation-only. Source and command references were inspected; note links and diff whitespace are checked as part of delivery. No build, regression suite, database migration, API startup, or deployment was run. Existing checks are documented without claiming that they currently pass.
+`dotnet --info` confirms the known invalid `global.json` selector (`10.0.0`) with SDK `10.0.401` installed. Restore and build succeeded using absolute solution paths from `/private/tmp`; build reported five existing NuGet vulnerability/redundant dependency warnings and zero errors. The executable suite passed **199 regression checks**, including PostgreSQL 18 migrations, existing seed/schedule checks, and exercise search HTTP/database checks against a fresh disposable loopback-only database. No development/production database migration or deployment was run. `git diff --check` passes.
+
+Search-only delivery verification exported the exact staged code into a temporary directory, excluding the earlier seed catalog and seed-test changes. Restore and a fresh build passed using SDK 10.0.401 from outside the repository (17 existing nullable/dependency/vulnerability warnings, zero errors). The exported executable suite passed **194 regression checks**, including real PostgreSQL 18 and HTTP search/schedule checks against a fresh disposable local database. The earlier 199-check run included five local seed checks that are excluded from this PR.
 
 ## Resume checklist
 

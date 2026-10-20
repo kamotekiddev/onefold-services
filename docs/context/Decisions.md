@@ -1,6 +1,6 @@
 ---
 tags: [onefold, decisions]
-updated: 2026-10-19
+updated: 2026-10-20
 ---
 
 # Decisions
@@ -37,6 +37,14 @@ See [[Project Home]], [[Architecture]], and [[Features and API]]. These entries 
 - **Decision:** Use problem responses with trace IDs, preserve field-level validation messages, map known domain/application exceptions, and keep unexpected error details generic in responses.
 - **Consequence:** New exception types need a deliberate mapping. Model-binding and handler validation should remain consistent. MVC exception handling does not imply equivalent formatting for all middleware responses.
 - **Evidence:** [ExceptionFilter](../../Onefold/Filters/ExceptionFilter.cs), [ErrorResponses](../../Onefold/Filters/ErrorResponses.cs), [Program](../../Onefold/Program.cs), [checks](../../Tests/Program.cs).
+
+## D-005 — Search active available exercises by name
+
+- **Status:** Explicit user selections and approved implementation plan, 2026-10-20.
+- **Decision:** Provide authenticated, case-insensitive contains search over active global and active current-user exercises, with paged results and a total count. Interpret wildcard characters literally.
+- **Consequence:** Other users' exercises and inactive exercises are excluded from items and counts. Existing creation leaves personal exercises inactive; changing that lifecycle is outside this feature. No schema change or deployment is required.
+- **Contract defaults:** Required trimmed name of 1–255 characters; page 1, page size 20 (maximum 100); order by name then ID. Return existing ID/name DTOs in a pagination envelope.
+- **Evidence:** User selected contains matching, active global plus active personal visibility, and pagination, then requested implementation of the proposed plan. See [handler](../../Application/Features/Workout/Exercise/SearchExercises/SearchExercisesHandler.cs), [repository](../../Infrastructure/Repository/ExerciseRepository.cs), and [integration checks](../../Tests/ExerciseSearchIntegrationChecks.cs).
 
 ## Adding or replacing decisions
 

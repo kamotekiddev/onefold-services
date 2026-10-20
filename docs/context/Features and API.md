@@ -1,6 +1,6 @@
 ---
 tags: [onefold, api, workouts]
-updated: 2026-10-19
+updated: 2026-10-20
 ---
 
 # Features and API
@@ -14,7 +14,7 @@ Routes below follow the controller names in the inspected checkout. All listed w
 | Controller | Routes | Source |
 | --- | --- | --- |
 | Authentication | `POST /api/Auth/sign-up`, `/sign-in`, `/refresh` | [AuthController](../../Onefold/Controllers/Authentication/AuthController.cs) |
-| Exercises | `POST /api/workout/Exercise`, `GET /api/workout/Exercise/{id}` | [ExerciseController](../../Onefold/Controllers/Workout/ExerciseController.cs) |
+| Exercises | `POST /api/workout/Exercise`, `GET /api/workout/Exercise/{id}`, `GET /api/workout/Exercise/search` | [ExerciseController](../../Onefold/Controllers/Workout/ExerciseController.cs) |
 | Templates | `POST /api/workout/Template`, `GET /api/workout/Template`, `GET /api/workout/Template/{id}`, `PUT /api/workout/Template/{id}/schedule`, `PUT /api/workout/Template/{id}/exercises` | [TemplateController](../../Onefold/Controllers/Workout/TemplateController.cs) |
 | Sessions | `POST /api/workout/Session`, `GET /api/workout/Session`, `GET /api/workout/Session/{id}` | [SessionController](../../Onefold/Controllers/Workout/SessionController.cs) |
 
@@ -25,6 +25,17 @@ Signup returns 201. The other controller actions above return 200 on success. In
 [TokenService](../../Infrastructure/Authentication/TokenService.cs) issues signed JWT access tokens with user ID and email claims. Access-token lifetime is read from `Jwt:AccessTokenExpirationMinutes`; generated refresh tokens expire after one day in the inspected implementation.
 
 [RefreshAccessTokenHandler](../../Application/Features/Authentication/RefreshAccessToken/RefreshAccessTokenHandler.cs) rejects missing, expired, or revoked tokens, revokes the accepted token, and persists a newly issued refresh token. Do not assume this provides concurrency or replay guarantees beyond what the code and tests establish.
+
+## Exercise search
+
+- `GET /api/workout/Exercise/search?name=press&page=1&pageSize=20` requires authentication and searches active global exercises plus active exercises belonging to the current user.
+- `name` is required, trimmed, and must contain 1–255 characters after trimming. Matching is case-insensitive substring matching; `%`, `_`, and `\` are literal characters.
+- `page` defaults to 1 and must be positive. `pageSize` defaults to 20 and accepts 1–100. Requests whose calculated offset exceeds `Int32.MaxValue` are rejected.
+- The response is `{ items: [{ id, name }], page, pageSize, totalCount }`. Both items and total count use the same visibility and name filters. Results use database name order followed by ID; different exercises with the same name are retained.
+- No matches return empty items and zero total count. Pages beyond the results return empty items with the matching total count. Invalid queries use the existing 400 validation problem format.
+- User-created exercises currently remain inactive on creation, so search excludes them until activated. Search does not change creation or existing detail authorization behavior.
+
+Sources: [search handler](../../Application/Features/Workout/Exercise/SearchExercises/SearchExercisesHandler.cs), [validator](../../Application/Features/Workout/Exercise/SearchExercises/SearchExercisesRequestValidator.cs), [repository](../../Infrastructure/Repository/ExerciseRepository.cs), [HTTP/PostgreSQL checks](../../Tests/ExerciseSearchIntegrationChecks.cs). See [[Decisions]] and [[Current State]] for the decision and delivery status.
 
 ## Weekly template schedules
 
