@@ -177,6 +177,8 @@ internal static class WorkoutTemplateScheduleChecks
         public void Add(Exercise exercise) => throw new NotSupportedException();
         public Task<Exercise?> GetByNameAsync(string name) => Task.FromResult<Exercise?>(Exercise);
         public Task<Exercise?> GetByIdAsync(Guid id) => Task.FromResult<Exercise?>(Exercise);
+        public Task<(IReadOnlyCollection<Exercise> Items, int TotalCount)> SearchAsync(
+            Guid userId, string name, int offset, int pageSize) => throw new NotSupportedException();
         public Task<IReadOnlyCollection<Exercise>> GetAvailableByIdsAsync(Guid userId, ICollection<Guid> ids)
             => Task.FromResult<IReadOnlyCollection<Exercise>>([Exercise]);
     }

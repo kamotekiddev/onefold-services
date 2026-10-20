@@ -8,5 +8,8 @@ public interface IExerciseRepository
     Task<Exercise?> GetByNameAsync(string name);
     Task<Exercise?> GetByIdAsync(Guid id);
 
+    Task<(IReadOnlyCollection<Exercise> Items, int TotalCount)> SearchAsync(
+        Guid userId, string name, int offset, int pageSize);
+
     Task<IReadOnlyCollection<Exercise>> GetAvailableByIdsAsync(Guid userId, ICollection<Guid> ids);
 }
